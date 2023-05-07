@@ -22,6 +22,7 @@ repositories {
         name = "sonatype-oss-snapshots1"
         url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
     }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -39,6 +40,9 @@ dependencies {
 
     // MiniMessage
     implementation "net.kyori:adventure-text-minimessage:4.13.1"
+
+    // FastInv and ItemBuilder
+    implementation 'fr.mrmicky:FastInv:3.0.3'
 }
 
 def targetJavaVersion = 17
