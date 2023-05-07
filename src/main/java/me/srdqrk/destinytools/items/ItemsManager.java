@@ -6,9 +6,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 import org.bukkit.Sound;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.inventory.meta.Damageable;
@@ -118,12 +121,13 @@ public class ItemsManager implements Listener {
             player.getLocation(),
             Sound.ITEM_ARMOR_EQUIP_ELYTRA, 1F, 1F);
   }
+
   private ItemMeta skillRifle(Player player, ItemStack rifle) {
     ItemMeta meta = rifle.getItemMeta();
     CrossbowMeta crossbowMeta = (CrossbowMeta) meta;
     Damageable damageable = (Damageable) meta;
     final int CROWSSBOW_DURABILITY = 434;
-    if (damageable.getDamage()  <= CROWSSBOW_DURABILITY) {
+    if (damageable.getDamage() <= CROWSSBOW_DURABILITY) {
       crossbowMeta.addChargedProjectile(new ItemStack(Material.ARROW, 1));
       damageable = (Damageable) crossbowMeta;
       final int maxTotalUses = 465;
@@ -168,7 +172,7 @@ public class ItemsManager implements Listener {
                 event.setCancelled(true);
               }
             } else if (item.getType() == Material.CROSSBOW) {
-              ItemMeta meta = skillRifle(player,item);
+              ItemMeta meta = skillRifle(player, item);
               if (meta != null) {
                 item.setItemMeta(meta);
               } else {
@@ -181,37 +185,36 @@ public class ItemsManager implements Listener {
     }
   }
 
-  /*
   @EventHandler
   public void onShootCrossBowEvent(EntityShootBowEvent e) {
-    Player p = (Player)e.getEntity();
+    Player p = (Player) e.getEntity();
     ItemStack item = e.getBow();
     // If special
-    p.sendMessage("1");
     if (item != null && item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
       // Special Crossbow
-      p.sendMessage("2");
       if (e.getBow().getType() == Material.CROSSBOW) {
-        p.sendMessage("3");
         ItemMeta meta = item.getItemMeta();
         int model = meta.getCustomModelData();
         switch (model) {
           case 1:
-            Damageable damageable = (Damageable) meta;
-            final int maxTotalUses = 465;
-            final int ourUses = 32;
-            final int uses = maxTotalUses / ourUses;
-            final int damage = damageable.getDamage() + uses;
-            damageable.setDamage(damage);
-            p.sendMessage("dano: " + damage);
-            item.setItemMeta((ItemMeta) damageable);
-            p.sendMessage("4");
+            Arrow arrow = (Arrow) e.getProjectile();
+            arrow.setCustomName("RifleAMMO");
+            arrow.setDamage(0.5);
             break;
         }
       }
     }
   }
-*/
+  @EventHandler
+  public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+    if (event.getDamager() instanceof Arrow) {
+      Arrow arrow = (Arrow) event.getDamager();
+      if (arrow.getCustomName() != null && arrow.getCustomName().equals("RifleAMMO")) {
+        event.setDamage(1);
+      }
+    }
+  }
+
 
 }
 
