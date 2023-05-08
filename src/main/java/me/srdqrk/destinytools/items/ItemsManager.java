@@ -6,13 +6,19 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.event.Listener;
@@ -20,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 
 public class ItemsManager implements Listener {
@@ -47,6 +54,8 @@ public class ItemsManager implements Listener {
     this.specialItemMap.put("GafasTacticas", gafas);
     SpecialItem rifle = new SpecialItem(buildRifle());
     this.specialItemMap.put("Rifle", rifle);
+    SpecialItem patodehule = new SpecialItem(buildPatoDeHule());
+    this.specialItemMap.put("PatoDeHule", patodehule);
   }
 
   public ItemStack buildCuerda() {
@@ -86,6 +95,15 @@ public class ItemsManager implements Listener {
     ItemMeta meta = is.getItemMeta();
     meta.setCustomModelData(1);
     meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Rifle"));
+    is.setItemMeta(meta);
+
+    return is;
+  }
+  public ItemStack buildPatoDeHule() {
+    ItemStack is = new ItemStack(Material.PAPER, 1);
+    ItemMeta meta = is.getItemMeta();
+    meta.setCustomModelData(103);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Patito de Hule"));
     is.setItemMeta(meta);
 
     return is;
@@ -198,7 +216,7 @@ public class ItemsManager implements Listener {
         switch (model) {
           case 1:
             Arrow arrow = (Arrow) e.getProjectile();
-            arrow.setCustomName("RifleAMMO");
+            arrow.customName(DestinyTools.instance().getMm().deserialize("RifleAMMO"));
             arrow.setDamage(0.5);
             break;
         }
@@ -207,13 +225,41 @@ public class ItemsManager implements Listener {
   }
   @EventHandler
   public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-    if (event.getDamager() instanceof Arrow) {
-      Arrow arrow = (Arrow) event.getDamager();
-      if (arrow.getCustomName() != null && arrow.getCustomName().equals("RifleAMMO")) {
+    if (event.getDamager() instanceof Arrow arrow) {
+      if (arrow.customName() != null
+              && DestinyTools.instance().getMm().serialize(Objects.requireNonNull(arrow.customName())).equals("RifleAMMO")) {
         event.setDamage(1);
       }
     }
   }
+  @EventHandler
+  public void onInventoryInteract(InventoryClickEvent e) {
+    if (!(e.getWhoClicked() instanceof Player)) {
+      return;
+    }
+
+    final Player p = (Player) e.getWhoClicked();
+    final ItemStack current = e.getCurrentItem();
+    final int PATO_SLOT = 17;
+
+    if (e.getSlot() == PATO_SLOT) {
+      if (current != null && current.hasItemMeta()
+              && current.getItemMeta().hasCustomModelData()
+              && current.getItemMeta().getCustomModelData() == 103) {
+        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+      } else {
+        ItemStack cursor = e.getCursor();
+        if (cursor != null && cursor.hasItemMeta()
+                && cursor.getItemMeta().hasCustomModelData()
+                && cursor.getItemMeta().getCustomModelData() == 103) {
+          p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
+        }
+      }
+    }
+  }
+
+
+
 
 
 }
