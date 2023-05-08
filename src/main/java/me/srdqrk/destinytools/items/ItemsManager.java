@@ -2,32 +2,28 @@ package me.srdqrk.destinytools.items;
 
 import lombok.Getter;
 import me.srdqrk.destinytools.DestinyTools;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 
-import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.inventory.InventoryAction;
+
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import java.util.HashMap;
 import java.util.Objects;
-
 
 public class ItemsManager implements Listener {
 
@@ -56,6 +52,15 @@ public class ItemsManager implements Listener {
     this.specialItemMap.put("Rifle", rifle);
     SpecialItem patodehule = new SpecialItem(buildPatoDeHule());
     this.specialItemMap.put("PatoDeHule", patodehule);
+    SpecialItem sierra = new SpecialItem(buildSierra());
+    this.specialItemMap.put("Sierra", sierra);
+    SpecialItem carne = new SpecialItem(buildPedazoCarne());
+    this.specialItemMap.put("PedazoDeCarne", carne);
+    SpecialItem acido = new SpecialItem(buildBotellaDeAcido());
+    this.specialItemMap.put("BotellaDeAcido", acido);
+    SpecialItem sulfuro = new SpecialItem(buildBotellaDeSulfuro());
+    this.specialItemMap.put("BotellaDeSulfuro", sulfuro);
+
   }
 
   public ItemStack buildCuerda() {
@@ -99,6 +104,7 @@ public class ItemsManager implements Listener {
 
     return is;
   }
+
   public ItemStack buildPatoDeHule() {
     ItemStack is = new ItemStack(Material.PAPER, 1);
     ItemMeta meta = is.getItemMeta();
@@ -108,6 +114,46 @@ public class ItemsManager implements Listener {
 
     return is;
   }
+
+  public ItemStack buildSierra() {
+    ItemStack is = new ItemStack(Material.PAPER, 1);
+    ItemMeta meta = is.getItemMeta();
+    meta.setCustomModelData(102);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Sierra"));
+    is.setItemMeta(meta);
+
+    return is;
+  }
+
+  public ItemStack buildPedazoCarne() {
+    ItemStack is = new ItemStack(Material.PAPER, 1);
+    ItemMeta meta = is.getItemMeta();
+    meta.setCustomModelData(99);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Pedazo de Carne"));
+    is.setItemMeta(meta);
+
+    return is;
+  }
+
+  public ItemStack buildBotellaDeAcido() {
+    ItemStack is = new ItemStack(Material.SPLASH_POTION, 1);
+    PotionMeta meta = (PotionMeta) is.getItemMeta();
+    meta.setColor(Color.fromRGB(102, 51, 0));
+    meta.setCustomModelData(500);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Botella de Acido"));
+    is.setItemMeta(meta);
+    return is;
+  }
+  public ItemStack buildBotellaDeSulfuro() {
+    ItemStack is = new ItemStack(Material.SPLASH_POTION, 1);
+    PotionMeta meta = (PotionMeta) is.getItemMeta();
+    meta.setColor(Color.fromRGB(102, 51, 0));
+    meta.setCustomModelData(500);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Botella de Sulfuro"));
+    is.setItemMeta(meta);
+    return is;
+  }
+
 
   private void skillCuerda(Player player) {
     int CUERDA_Y_TELEPORT = 8;
@@ -223,6 +269,7 @@ public class ItemsManager implements Listener {
       }
     }
   }
+
   @EventHandler
   public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
     if (event.getDamager() instanceof Arrow arrow) {
@@ -232,6 +279,7 @@ public class ItemsManager implements Listener {
       }
     }
   }
+
   @EventHandler
   public void onInventoryInteract(InventoryClickEvent e) {
     if (!(e.getWhoClicked() instanceof Player)) {
@@ -258,10 +306,60 @@ public class ItemsManager implements Listener {
     }
   }
 
+  @EventHandler
+  public void onPlayerAttackAnotherOne(EntityDamageByEntityEvent e) {
+    if ((e.getDamager() instanceof Player damager) && (e.getEntity() instanceof Player damaged)) {
+      ItemStack weapon = damager.getPlayer().getInventory().getItemInMainHand();
+      if (weapon.hasItemMeta() && weapon.getItemMeta().hasCustomModelData() && weapon.getItemMeta().getCustomModelData() == 102) {
+        ItemStack reward = buildPedazoCarne();
+        damager.getInventory().addItem(reward);
+      }
+    }
+  }
 
+  @EventHandler
+  public void onProjectileHit(ProjectileHitEvent e) {
+    Projectile projectile = e.getEntity();
+    if (!(projectile instanceof ThrownPotion potion)) {
+      return;
+    }
+    PotionMeta meta = (PotionMeta) potion.getItem().getItemMeta();
+    if (meta == null || !meta.hasCustomModelData()) {
+      return;
+    }
+    int customModelData = meta.getCustomModelData();
+    switch (customModelData) {
+      case 500:
+        Entity hitEntity = e.getHitEntity();
+        if (hitEntity != null) {
+          if (hitEntity instanceof LivingEntity) {
+            ((LivingEntity) hitEntity).damage(8);
+          }
+        }
+        break;
+      case 501:
+        hitEntity = e.getHitEntity();
+        if (hitEntity != null) {
+          if (hitEntity instanceof LivingEntity livingEntity) {
+            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 10 * 20, 0));
+            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 10 * 20, 0));
+            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 10 * 20, 0));
+          }
+        }
+        break;
+      default:
+        break;
+    }
+  }
 
 
 
 }
+
+
+
+
+
+
 
 
