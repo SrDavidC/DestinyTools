@@ -8,10 +8,16 @@ import me.srdqrk.destinytools.items.ItemsManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public final class DestinyTools extends JavaPlugin {
 
@@ -64,4 +70,30 @@ public final class DestinyTools extends JavaPlugin {
       }
     }
   }
+
+  public List<Player> getElHoyoParticipants() {
+    String pluginName = "teamming-slots";
+    Plugin ts = Bukkit.getPluginManager().getPlugin(pluginName);
+    List<Player> participants;
+    if (ts != null) {
+      FileConfiguration config = ts.getConfig();
+      if (config != null) {
+        List<String> playerNames = config.getStringList("participantes");
+        participants = playerNames.stream()
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull).
+                collect(Collectors.toList());
+      } else {
+        this.logger.log(Level.SEVERE, "Error mientras se intentaba acceder a los participantes en DestinyTools." +
+                "El plugin " + pluginName + " no tiene archivo de configuración.");
+        participants = null;
+      }
+    } else {
+      this.logger.log(Level.SEVERE, "Error mientras se intentaba acceder a los participantes en DestinyTools." +
+              "El plugin " + pluginName + " no existe en la carpeta plugins.");
+      participants = null;
+    }
+    return participants;
+  }
+
 }

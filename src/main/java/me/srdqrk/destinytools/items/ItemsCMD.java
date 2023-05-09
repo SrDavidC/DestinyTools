@@ -23,9 +23,31 @@ public class ItemsCMD extends BaseCommand {
   @CommandCompletion("@items")
   public void onGetItem(Player sender, String itemName) {
     SpecialItem specialItem = DestinyTools.instance().getItemsManager().getSpecialItemMap().get(itemName);
-    sender.getInventory().addItem(specialItem.getItemStack());
+    String message;
+    if (specialItem != null) {
+      sender.getInventory().addItem(specialItem.getItemStack());
+      message = "El item ha sido anadido a tu inventario.";
+      sender.sendMessage(DestinyTools.instance().getMm().deserialize("<green>" + message));
+    } else {
+      message = "El item " + itemName +" no fue encontrado";
+      message += "\nCantidad de items actuales: " + DestinyTools.instance().getItemsManager().getSpecialItemMap().size();
+      sender.sendMessage(DestinyTools.instance().getMm().deserialize("<red>" + message));
+    }
+
   }
-
-
-
+  @Subcommand("give")
+  @CommandCompletion("@players @items")
+  public void onGetItem(Player sender, Player player ,String itemName) {
+    SpecialItem specialItem = DestinyTools.instance().getItemsManager().getSpecialItemMap().get(itemName);
+    String message;
+    if (specialItem != null) {
+      player.getInventory().addItem(specialItem.getItemStack());
+      message = "El item ha sido anadido a tu inventario.";
+      sender.sendMessage(DestinyTools.instance().getMm().deserialize("<green>" + message));
+    } else {
+      message = "El item " + itemName + " no fue encontrado";
+      message += "\nCantidad de items actuales: " + DestinyTools.instance().getItemsManager().getSpecialItemMap().size();
+      sender.sendMessage(DestinyTools.instance().getMm().deserialize("<red>" + message));
+    }
+  }
 }

@@ -27,6 +27,17 @@ import java.util.Objects;
 
 public class ItemsManager implements Listener {
 
+  final int FISHING_ROD_CMD = 1;
+  final int GAFAS_TACTICOS_CMD = 101;
+  final int RIFLE_CMD = 1;
+  final int SIERRA_CMD = 102;
+  final int PATO_DE_HULE_CMD = 103;
+  final int CUERDA_CMD = 104;
+  final int PEDAZO_DE_CARNE_CMD = 99;
+  final int BOTELLA_DE_ACIDO_CMD = 500;
+  final int BOTELLA_DE_SULFURO_CMD = 501;
+
+
   private final @Getter HashMap<String, SpecialItem> specialItemMap;
 
   public ItemsManager() {
@@ -39,11 +50,8 @@ public class ItemsManager implements Listener {
 
   public void buildItems() {
 
-    // Cuerda
     SpecialItem cuerda = new SpecialItem(buildCuerda());
     this.specialItemMap.put("Cuerda", cuerda);
-
-    // Fishing Rod
     SpecialItem fishing_rod = new SpecialItem(buildFishingRod());
     this.specialItemMap.put("CanaDePescar", fishing_rod);
     SpecialItem gafas = new SpecialItem(buildGafasTacticas());
@@ -66,19 +74,18 @@ public class ItemsManager implements Listener {
   public ItemStack buildCuerda() {
     ItemStack is = new ItemStack(Material.PAPER, 1);
     ItemMeta meta = is.getItemMeta();
-    meta.setCustomModelData(104);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Cuerda"));
+    meta.setCustomModelData(CUERDA_CMD);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<green><bold> Cuerda"));
     is.setItemMeta(meta);
 
     return is;
   }
 
   public ItemStack buildFishingRod() {
-    String itemName = "Cana de Pescar";
     ItemStack is = new ItemStack(Material.FISHING_ROD, 1);
     ItemMeta meta = is.getItemMeta();
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>" + itemName));
-    meta.setCustomModelData(500);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Cana de Pescar"));
+    meta.setCustomModelData(FISHING_ROD_CMD);
     Damageable damageable = (Damageable) meta;
     damageable.setDamage(44);
     is.setItemMeta(meta);
@@ -88,8 +95,8 @@ public class ItemsManager implements Listener {
   public ItemStack buildGafasTacticas() {
     ItemStack is = new ItemStack(Material.PAPER, 1);
     ItemMeta meta = is.getItemMeta();
-    meta.setCustomModelData(101);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Gafas Tacticas"));
+    meta.setCustomModelData(GAFAS_TACTICOS_CMD);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Gafas Tacticas"));
     is.setItemMeta(meta);
 
     return is;
@@ -98,8 +105,8 @@ public class ItemsManager implements Listener {
   public ItemStack buildRifle() {
     ItemStack is = new ItemStack(Material.CROSSBOW, 1);
     ItemMeta meta = is.getItemMeta();
-    meta.setCustomModelData(1);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Rifle"));
+    meta.setCustomModelData(RIFLE_CMD);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Rifle"));
     is.setItemMeta(meta);
 
     return is;
@@ -108,8 +115,8 @@ public class ItemsManager implements Listener {
   public ItemStack buildPatoDeHule() {
     ItemStack is = new ItemStack(Material.PAPER, 1);
     ItemMeta meta = is.getItemMeta();
-    meta.setCustomModelData(103);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Patito de Hule"));
+    meta.setCustomModelData(PATO_DE_HULE_CMD);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Patito de Hule"));
     is.setItemMeta(meta);
 
     return is;
@@ -118,8 +125,8 @@ public class ItemsManager implements Listener {
   public ItemStack buildSierra() {
     ItemStack is = new ItemStack(Material.PAPER, 1);
     ItemMeta meta = is.getItemMeta();
-    meta.setCustomModelData(102);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Sierra"));
+    meta.setCustomModelData(SIERRA_CMD);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Sierra"));
     is.setItemMeta(meta);
 
     return is;
@@ -128,8 +135,8 @@ public class ItemsManager implements Listener {
   public ItemStack buildPedazoCarne() {
     ItemStack is = new ItemStack(Material.PAPER, 1);
     ItemMeta meta = is.getItemMeta();
-    meta.setCustomModelData(99);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Pedazo de Carne"));
+    meta.setCustomModelData(PEDAZO_DE_CARNE_CMD);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Pedazo de Carne"));
     is.setItemMeta(meta);
 
     return is;
@@ -139,8 +146,8 @@ public class ItemsManager implements Listener {
     ItemStack is = new ItemStack(Material.SPLASH_POTION, 1);
     PotionMeta meta = (PotionMeta) is.getItemMeta();
     meta.setColor(Color.fromRGB(102, 51, 0));
-    meta.setCustomModelData(500);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Botella de Acido"));
+    meta.setCustomModelData(BOTELLA_DE_ACIDO_CMD);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Botella de Acido"));
     is.setItemMeta(meta);
     return is;
   }
@@ -148,8 +155,8 @@ public class ItemsManager implements Listener {
     ItemStack is = new ItemStack(Material.SPLASH_POTION, 1);
     PotionMeta meta = (PotionMeta) is.getItemMeta();
     meta.setColor(Color.fromRGB(102, 51, 0));
-    meta.setCustomModelData(500);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<yellow><bold>Botella de Sulfuro"));
+    meta.setCustomModelData(BOTELLA_DE_SULFURO_CMD);
+    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Botella de Sulfuro"));
     is.setItemMeta(meta);
     return is;
   }
@@ -293,13 +300,13 @@ public class ItemsManager implements Listener {
     if (e.getSlot() == PATO_SLOT) {
       if (current != null && current.hasItemMeta()
               && current.getItemMeta().hasCustomModelData()
-              && current.getItemMeta().getCustomModelData() == 103) {
+              && current.getItemMeta().getCustomModelData() == PATO_DE_HULE_CMD) {
         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
       } else {
         ItemStack cursor = e.getCursor();
         if (cursor != null && cursor.hasItemMeta()
                 && cursor.getItemMeta().hasCustomModelData()
-                && cursor.getItemMeta().getCustomModelData() == 103) {
+                && cursor.getItemMeta().getCustomModelData() == PATO_DE_HULE_CMD) {
           p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
         }
       }
