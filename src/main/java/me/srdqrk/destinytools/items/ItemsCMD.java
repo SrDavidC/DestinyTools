@@ -8,6 +8,7 @@ import me.srdqrk.destinytools.DestinyTools;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @CommandAlias("DestinyTools|dt|item|items")
 public class ItemsCMD extends BaseCommand {
@@ -33,6 +34,16 @@ public class ItemsCMD extends BaseCommand {
       message += "\nCantidad de items actuales: " + DestinyTools.instance().getItemsManager().getSpecialItemMap().size();
       sender.sendMessage(DestinyTools.instance().getMm().deserialize("<red>" + message));
     }
+
+  }
+  @Subcommand("getall")
+  public void onGetAllItems(Player sender) {
+    HashMap<String, SpecialItem> map = DestinyTools.instance().getItemsManager().getSpecialItemMap();
+    String message;
+    for (SpecialItem item : map.values()) {
+      sender.getInventory().addItem(item.getItemStack());
+    }
+    sender.sendMessage(DestinyTools.instance().getMm().deserialize("<green>" + "Te hemos dado todos los items especiales existentes"));
 
   }
   @Subcommand("give")

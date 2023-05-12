@@ -2,6 +2,7 @@ package me.srdqrk.destinytools.items;
 
 import lombok.Getter;
 import me.srdqrk.destinytools.DestinyTools;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 
 import org.bukkit.attribute.Attribute;
@@ -28,21 +29,32 @@ import java.util.Objects;
 public class ItemsManager implements Listener {
 
   final int FISHING_ROD_CMD = 1;
-  final int GAFAS_TACTICOS_CMD = 101;
   final int RIFLE_CMD = 1;
+  final int MINIGUN_DE_JUGUETE_CMD = 2;
+  final int PEDAZO_DE_CARNE_CMD = 99;
+  final int GAFAS_TACTICOS_CMD = 101;
   final int SIERRA_CMD = 102;
   final int PATO_DE_HULE_CMD = 103;
   final int CUERDA_CMD = 104;
-  final int PEDAZO_DE_CARNE_CMD = 99;
+  final int SUPLEMENTO_ALIMENTICIO_CMD = 106;
+  final int ADRENALINA_CMD = 107;
+  final int BANANA_CMD = 109;
+  final int KIT_ASTRONAUTA_CMD = 110;
+  final int AGUA_CMD = 111;
+  final int POLLO_CHILLON_CMD = 112;
   final int BOTELLA_DE_ACIDO_CMD = 500;
   final int BOTELLA_DE_SULFURO_CMD = 501;
 
 
+  final String itemNameColor = "<white><bold>";
+  final String itemLoreColor = "<gray><bold>";
+
   private final @Getter HashMap<String, SpecialItem> specialItemMap;
+  private MiniMessage mm;
 
   public ItemsManager() {
     this.specialItemMap = new HashMap<>();
-
+    this.mm = DestinyTools.instance().getMm();
     DestinyTools.instance().getServer().getPluginManager().registerEvents(this, DestinyTools.instance());
 
     buildItems();
@@ -69,7 +81,45 @@ public class ItemsManager implements Listener {
     SpecialItem sulfuro = new SpecialItem(buildBotellaDeSulfuro());
     this.specialItemMap.put("BotellaDeSulfuro", sulfuro);
 
+    this.specialItemMap.put("MinigunDeJuguete",new SpecialItem(new ItemBuilder(Material.CROSSBOW, mm.deserialize(
+            itemNameColor + " Minigun de Juguete"))
+            .customModelData(MINIGUN_DE_JUGUETE_CMD)
+            .lore(mm.deserialize(itemLoreColor + "Minigun que dispara 100 balas"))
+            .build()));
+    this.specialItemMap.put("SuplementoAlimenticio",new SpecialItem(new ItemBuilder(Material.PAPER, mm.deserialize(
+            itemNameColor + " SuplementoAlimenticio"))
+            .customModelData(SUPLEMENTO_ALIMENTICIO_CMD)
+            .lore(mm.deserialize(itemLoreColor + "Al darle click secundario (sin abrir inventario) te llena los muslos de hambre"))
+            .build()));
+    this.specialItemMap.put("Arenalina",new SpecialItem(new ItemBuilder(Material.PAPER, mm.deserialize(
+            itemNameColor + " Adrenalina"))
+            .customModelData(ADRENALINA_CMD)
+            .lore(mm.deserialize(itemLoreColor + "Al consumirlo te brinda una resistencia mayor al daño"))
+            .build()));
+    this.specialItemMap.put("Banana",new SpecialItem(new ItemBuilder(Material.PAPER, mm.deserialize(
+            itemNameColor + " Banana"))
+            .customModelData(BANANA_CMD)
+            .lore(mm.deserialize(itemLoreColor + "No tiene ningun uso, pero te la puedes comer y rellenar 4 muslos"))
+            .build()));
+    this.specialItemMap.put("KitAstronauta",new SpecialItem(new ItemBuilder(Material.PAPER, mm.deserialize(
+            itemNameColor + " Kit de Astronauta"))
+            .customModelData(KIT_ASTRONAUTA_CMD)
+            .lore(mm.deserialize(itemLoreColor + "Si posees el item \"Agua\" te da saturación por 10minutos"))
+            .build()));
+    this.specialItemMap.put("Agua",new SpecialItem(new ItemBuilder(Material.PAPER, mm.deserialize(
+            itemNameColor + " Agua"))
+            .customModelData(AGUA_CMD)
+            .lore(mm.deserialize(itemLoreColor + "Al consumirlo obtienes 1 muslo de comida, pero si lo juntas con otros objetos, puedes obtener grandes beneficios"))
+            .build()));
+    this.specialItemMap.put("PolloChillon",new SpecialItem(new ItemBuilder(Material.GOAT_HORN, mm.deserialize(
+            itemNameColor + " Pollo Chillon"))
+            .customModelData(POLLO_CHILLON_CMD)
+            .lore(mm.deserialize(itemLoreColor + "Al usarlo se reproduce un sonido chistoso"))
+            .build()));
+
   }
+
+
 
   public ItemStack buildCuerda() {
     ItemStack is = new ItemStack(Material.PAPER, 1);
@@ -216,6 +266,72 @@ public class ItemsManager implements Listener {
     return meta;
   }
 
+  private ItemMeta skillMinigun(Player player, ItemStack minigun) {
+    ItemMeta meta = minigun.getItemMeta();
+    CrossbowMeta crossbowMeta = (CrossbowMeta) meta;
+    Damageable damageable = (Damageable) meta;
+    final int CROWSSBOW_DURABILITY = 465;
+    if (damageable.getDamage() <= CROWSSBOW_DURABILITY) {
+      crossbowMeta.addChargedProjectile(new ItemStack(Material.ARROW, 1));
+      damageable = (Damageable) crossbowMeta;
+      final int maxTotalUses = 465;
+      final int ourUses = 100;
+      final int uses = maxTotalUses / ourUses;
+      final int damage = damageable.getDamage() + uses;
+      damageable.setDamage(damage);
+      meta = damageable;
+    } else {
+      player.playSound(
+              player.getLocation(),
+              Sound.ENTITY_ITEM_BREAK, 1F, 1F);
+      meta = null;
+    }
+    return meta;
+  }
+
+  private void skillBanana(Player player) {
+    if (player != null) {
+      player.setFoodLevel(player.getFoodLevel() + 8);
+      player.playSound(player.getLocation(),Sound.ENTITY_PLAYER_BURP, 1f, 1f);
+    }
+  }
+  private void skillAgua(Player player) {
+    if (player != null) {
+      player.setFoodLevel(player.getFoodLevel() + 2);
+      player.playSound(player.getLocation(),Sound.ITEM_HONEY_BOTTLE_DRINK, 1f, 0.4f);
+    }
+  }
+  private void skillKitAstronauta(Player player) {
+    if (player != null) {
+      for (ItemStack item : player.getInventory().getContents()) {
+        if (item != null && item.hasItemMeta()
+                && item.getItemMeta().hasCustomModelData()
+                && item.getItemMeta().getCustomModelData() == AGUA_CMD) {
+          player.getInventory().remove(item);
+          player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 10 * 60 * 20,0));
+          player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE,1f,1f );
+          break;
+        }
+      }
+    }
+  }
+  private void skillAdrenalina(Player player) {
+    if (player != null) {
+      // 10 * 60 * 20 = 10 minutes on ticks, 1 second equals 20 ticks
+      player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10 * 60 * 20,1));
+    }
+  }
+
+  private void skillPolloChillon(Player player) {
+    if (player != null) {
+      Location location = player.getLocation();
+      String soundName = "SONIDO_CUSTOM"; // TODO: change name
+      float volume = 1.0f;
+      float pitch = 1.0f;
+      location.getWorld().playSound(location, Sound.ENTITY_PLAYER_BURP, volume, pitch);
+
+    }
+  }
   @EventHandler
   public void onPlayerInteract(PlayerInteractEvent event) {
     if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -251,10 +367,46 @@ public class ItemsManager implements Listener {
               }
             }
             break;
-        }
+          case MINIGUN_DE_JUGUETE_CMD:
+            ItemMeta meta = skillMinigun(player, item);
+            if (meta != null) {
+              item.setItemMeta(meta);
+            } else {
+              event.setCancelled(true);
+            }
+            break;
+          case SUPLEMENTO_ALIMENTICIO_CMD:
+            player.setFoodLevel(20);
+            player.playSound(player.getLocation(),Sound.ENTITY_PLAYER_BURP,1f,1f);
+            item.setAmount(item.getAmount()-1);
+            break;
+          case ADRENALINA_CMD:
+            skillAdrenalina(player);
+            item.setAmount(item.getAmount()-1);
+            break;
+          case BANANA_CMD:
+            skillBanana(player);
+            item.setAmount(item.getAmount()-1);
+            break;
+          case AGUA_CMD:
+            skillAgua(player);
+            item.setAmount(item.getAmount()-1);
+            break;
+          case KIT_ASTRONAUTA_CMD:
+            skillKitAstronauta(player);
+            item.setAmount(item.getAmount()-1);
+            break;
+          case POLLO_CHILLON_CMD:
+            event.setCancelled(true);
+            skillPolloChillon(player);
+            break;
+
+        } // END SWITCH
       }
     }
   }
+
+
 
   @EventHandler
   public void onShootCrossBowEvent(EntityShootBowEvent e) {
@@ -267,10 +419,16 @@ public class ItemsManager implements Listener {
         ItemMeta meta = item.getItemMeta();
         int model = meta.getCustomModelData();
         switch (model) {
-          case 1:
+          case RIFLE_CMD:
             Arrow arrow = (Arrow) e.getProjectile();
             arrow.customName(DestinyTools.instance().getMm().deserialize("RifleAMMO"));
             arrow.setDamage(0.5);
+            break;
+          case MINIGUN_DE_JUGUETE_CMD:
+            e.setCancelled(true);
+            e.getProjectile().remove();
+            Snowball snowball = e.getEntity().launchProjectile(Snowball.class);
+            snowball.setVelocity(e.getProjectile().getVelocity());
             break;
         }
       }
