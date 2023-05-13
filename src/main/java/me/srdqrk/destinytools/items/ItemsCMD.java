@@ -4,7 +4,9 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import me.srdqrk.destinytools.DestinyTools;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -39,7 +41,6 @@ public class ItemsCMD extends BaseCommand {
   @Subcommand("getall")
   public void onGetAllItems(Player sender) {
     HashMap<String, SpecialItem> map = DestinyTools.instance().getItemsManager().getSpecialItemMap();
-    String message;
     for (SpecialItem item : map.values()) {
       sender.getInventory().addItem(item.getItemStack());
     }
@@ -48,11 +49,11 @@ public class ItemsCMD extends BaseCommand {
   }
   @Subcommand("give")
   @CommandCompletion("@players @items")
-  public void onGetItem(Player sender, Player player ,String itemName) {
+  public void onGiveItem(CommandSender sender, OnlinePlayer player, String itemName) {
     SpecialItem specialItem = DestinyTools.instance().getItemsManager().getSpecialItemMap().get(itemName);
     String message;
     if (specialItem != null) {
-      player.getInventory().addItem(specialItem.getItemStack());
+      player.getPlayer().getInventory().addItem(specialItem.getItemStack());
       message = "El item ha sido anadido a tu inventario.";
       sender.sendMessage(DestinyTools.instance().getMm().deserialize("<green>" + message));
     } else {
