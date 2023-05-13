@@ -212,6 +212,9 @@ public class ItemsManager implements Listener {
     if (player != null) {
       player.setFoodLevel(player.getFoodLevel() + 8);
       player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1f, 1f);
+      ItemStack is = player.getInventory().getItemInMainHand();
+      is.setAmount(is.getAmount() -  1);
+      player.getInventory().setItemInMainHand(is);
     }
   }
 
@@ -219,6 +222,9 @@ public class ItemsManager implements Listener {
     if (player != null) {
       player.setFoodLevel(player.getFoodLevel() + 2);
       player.playSound(player.getLocation(), Sound.ITEM_HONEY_BOTTLE_DRINK, 1f, 0.4f);
+      ItemStack is = player.getInventory().getItemInMainHand();
+      is.setAmount(is.getAmount() -  1);
+      player.getInventory().setItemInMainHand(is);
     }
   }
 
@@ -231,6 +237,9 @@ public class ItemsManager implements Listener {
           player.getInventory().remove(item);
           player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 10 * 60 * 20, 0));
           player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1f, 1f);
+          ItemStack is = player.getInventory().getItemInMainHand();
+          is.setAmount(is.getAmount() -  1);
+          player.getInventory().setItemInMainHand(is);
           break;
         }
       }
@@ -241,6 +250,9 @@ public class ItemsManager implements Listener {
     if (player != null) {
       // 10 * 60 * 20 = 10 minutes on ticks, 1 second equals 20 ticks
       player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10 * 60 * 20, 1));
+      ItemStack is = player.getInventory().getItemInMainHand();
+      is.setAmount(is.getAmount() -  1);
+      player.getInventory().setItemInMainHand(is);
     }
   }
 
@@ -256,7 +268,7 @@ public class ItemsManager implements Listener {
   }
 
   private void skillPlanta(Block clickedBlock, BlockFace blockFace, ItemStack item) {
-    if (clickedBlock != null  /* && event.getClickedBlock().getType() != Material.AIR */) {
+    if (clickedBlock != null && clickedBlock.getType() != null && clickedBlock.getType() != Material.AIR ) {
       Location loc = clickedBlock.getLocation().add(0.5, 1, 0.5);
       if (loc.getBlock().getType() == Material.AIR) {
         ItemFrame itemFrame = (ItemFrame) loc.getWorld().spawnEntity(loc, EntityType.ITEM_FRAME);
@@ -340,19 +352,15 @@ public class ItemsManager implements Listener {
             break;
           case ADRENALINA_CMD:
             skillAdrenalina(player);
-            item.setAmount(item.getAmount() - 1);
             break;
           case BANANA_CMD:
             skillBanana(player);
-            item.setAmount(item.getAmount() - 1);
             break;
           case AGUA_CMD:
             skillAgua(player);
-            item.setAmount(item.getAmount() - 1);
             break;
           case KIT_ASTRONAUTA_CMD:
             skillKitAstronauta(player);
-            item.setAmount(item.getAmount() - 1);
             break;
           case POLLO_CHILLON_CMD:
             event.setCancelled(true);
@@ -360,11 +368,9 @@ public class ItemsManager implements Listener {
             break;
           case MINA_ELECTRICA_CMD:
             skillMinaElectrica(event.getClickedBlock(), event.getBlockFace(), item);
-            item.setAmount(item.getAmount() - 1);
             break;
           case PLANTA_CMD:
             skillPlanta(event.getClickedBlock(), event.getBlockFace(),item);
-            item.setAmount(item.getAmount() - 1);
             break;
         } // END SWITCH
       }
