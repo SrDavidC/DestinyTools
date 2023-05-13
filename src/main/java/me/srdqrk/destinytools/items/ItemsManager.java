@@ -7,6 +7,7 @@ import org.bukkit.*;
 
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -51,9 +52,6 @@ public class ItemsManager implements Listener {
   final int BOTELLA_DE_SULFURO_CMD = 501;
 
 
-  final String itemNameColor = "<white><bold>";
-  final String itemLoreColor = "<gray>";
-
   private final @Getter HashMap<String, SpecialItem> specialItemMap;
   private MiniMessage mm;
 
@@ -66,174 +64,72 @@ public class ItemsManager implements Listener {
   }
 
   public void buildItems() {
+    this.specialItemMap.put("Cuerda",
+            new SpecialItem(Material.PAPER,"Cuerda",CUERDA_CMD,"Al usar, el jugador es tpeado 8 bloques abajo"));
 
-    SpecialItem cuerda = new SpecialItem(buildCuerda());
-    this.specialItemMap.put("Cuerda", cuerda);
-    SpecialItem fishing_rod = new SpecialItem(buildFishingRod());
-    this.specialItemMap.put("CanaDePescar", fishing_rod);
-    SpecialItem gafas = new SpecialItem(buildGafasTacticas());
-    this.specialItemMap.put("GafasTacticas", gafas);
-    SpecialItem rifle = new SpecialItem(buildRifle());
-    this.specialItemMap.put("Rifle", rifle);
-    SpecialItem patodehule = new SpecialItem(buildPatoDeHule());
-    this.specialItemMap.put("PatoDeHule", patodehule);
-    SpecialItem sierra = new SpecialItem(buildSierra());
-    this.specialItemMap.put("Sierra", sierra);
-    SpecialItem carne = new SpecialItem(buildPedazoCarne());
-    this.specialItemMap.put("PedazoDeCarne", carne);
-    SpecialItem acido = new SpecialItem(buildBotellaDeAcido());
-    this.specialItemMap.put("BotellaDeAcido", acido);
-    SpecialItem sulfuro = new SpecialItem(buildBotellaDeSulfuro());
-    this.specialItemMap.put("BotellaDeSulfuro", sulfuro);
+    this.specialItemMap.put("CañaDePescar",
+            new SpecialItem(Material.FISHING_ROD,"Caña De Pescar",FISHING_ROD_CMD,"Uso limitado de 10"));
 
-    this.specialItemMap.put("MinigunDeJuguete", new SpecialItem(new ItemBuilder(Material.CROSSBOW, mm.deserialize(
-            itemNameColor + " Minigun de Juguete"))
-            .customModelData(MINIGUN_DE_JUGUETE_CMD)
-            .lore(mm.deserialize(itemLoreColor + "Minigun que dispara 100 balas"))
-            .build()));
-    this.specialItemMap.put("SuplementoAlimenticio", new SpecialItem(new ItemBuilder(Material.PAPER, mm.deserialize(
-            itemNameColor + " SuplementoAlimenticio"))
-            .customModelData(SUPLEMENTO_ALIMENTICIO_CMD)
-            .lore(mm.deserialize(itemLoreColor + "Al darle click secundario (sin abrir inventario) te llena los muslos de hambre"))
-            .build()));
-    this.specialItemMap.put("Adrenalina", new SpecialItem(new ItemBuilder(Material.PAPER, mm.deserialize(
-            itemNameColor + " Adrenalina"))
-            .customModelData(ADRENALINA_CMD)
-            .lore(mm.deserialize(itemLoreColor + "Al consumirlo te brinda una resistencia mayor al daño"))
-            .build()));
-    this.specialItemMap.put("Banana", new SpecialItem(new ItemBuilder(Material.PAPER, mm.deserialize(
-            itemNameColor + " Banana"))
-            .customModelData(BANANA_CMD)
-            .lore(mm.deserialize(itemLoreColor + "No tiene ningún uso, pero te la puedes comer y rellenar 4 muslos"))
-            .build()));
-    this.specialItemMap.put("KitAstronauta", new SpecialItem(new ItemBuilder(Material.PAPER, mm.deserialize(
-            itemNameColor + " Kit de Astronauta"))
-            .customModelData(KIT_ASTRONAUTA_CMD)
-            .lore(mm.deserialize(itemLoreColor + "Si posees el item \"Agua\" te da saturación por 10minutos"))
-            .build()));
-    this.specialItemMap.put("Agua", new SpecialItem(new ItemBuilder(Material.PAPER, mm.deserialize(
-            itemNameColor + " Agua"))
-            .customModelData(AGUA_CMD)
-            .lore(mm.deserialize(itemLoreColor + "Al consumirlo obtienes 1 muslo de comida, pero si lo juntas con otros objetos, puedes obtener grandes beneficios"))
-            .build()));
-    this.specialItemMap.put("PolloChillon", new SpecialItem(new ItemBuilder(Material.GOAT_HORN, mm.deserialize(
-            itemNameColor + " Pollo Chillón"))
-            .customModelData(POLLO_CHILLON_CMD)
-            .lore(mm.deserialize(itemLoreColor + "Al usarlo se reproduce un sonido chistoso"))
-            .build()));
-    this.specialItemMap.put("Planta", new SpecialItem(new ItemBuilder(Material.PAPER, mm.deserialize(
-            itemNameColor + " Planta"))
-            .customModelData(PLANTA_CMD)
-            .lore(mm.deserialize(itemLoreColor + "Al darle click sobre el suelo, se pone la maceta, te brinda bayas cada 5 minutos"))
-            .build()));
-    this.specialItemMap.put("MinaElectrica", new SpecialItem(new ItemBuilder(Material.PAPER, mm.deserialize(
-            itemNameColor + " Mina Eléctrica"))
-            .customModelData(MINA_ELECTRICA_CMD)
-            .lore(mm.deserialize(itemLoreColor + "Al colocarla, se planta una mina que al ser pisada produce la muerte instantánea por una descarga eléctrica"))
-            .build()));
+    this.specialItemMap.put("LentesTácticos",
+            new SpecialItem(Material.PAPER,"Lentes Tácticos",GAFAS_TACTICOS_CMD,""));
+
+    this.specialItemMap.put("Rifle",
+            new SpecialItem(Material.CROSSBOW,"Rifle",RIFLE_CMD,"Tiene 32 balas de puro dolor."));
+
+    this.specialItemMap.put("PatoDeHule",
+            new SpecialItem(Material.PAPER,"Pato De Hule",PATO_DE_HULE_CMD,"Si lo colocas en en slot especial, te da 2 corazones extra de vida"));
+
+    this.specialItemMap.put("Sierra",
+            new SpecialItem(Material.PAPER,"Sierra",SIERRA_CMD,"Al golpear un jugador le cortas un pedazo de carne comestible"));
+
+    this.specialItemMap.put("PedazoDeCarne",
+            new SpecialItem(Material.PAPER,"PedazoDeCarne",PEDAZO_DE_CARNE_CMD,"Te rellena dos muslos de comida"));
+
+    this.specialItemMap.put("BotellaDeAcido", new SpecialItem(Material.SPLASH_POTION,"Botella de Acido",
+            BOTELLA_DE_ACIDO_CMD, "Daña a las víctimas", Color.fromRGB(102, 51, 0)));
+
+    this.specialItemMap.put("BotellaDeSulfuro", new SpecialItem(Material.SPLASH_POTION,"Botella de Sulfuro",
+            BOTELLA_DE_SULFURO_CMD, "Al lanzarla, le aplica efecto de hambre, veneno y mareo a la víctima", Color.fromRGB(102, 51, 0)));
+
+    this.specialItemMap.put("MinigunDeJuguete", new SpecialItem(Material.CROSSBOW,"Minigun de Juguete",
+            MINIGUN_DE_JUGUETE_CMD, "Minigun que dispara 100 balas"));
+
+    this.specialItemMap.put("SuplementoAlimenticio", new SpecialItem(Material.PAPER,"Suplemento Alimenticio",
+            SUPLEMENTO_ALIMENTICIO_CMD, "Al darle click secundario (sin abrir inventario) te llena los muslos de hambre"));
+
+    this.specialItemMap.put("Adrenalina", new SpecialItem(Material.PAPER,"Adrenalina",
+            ADRENALINA_CMD, "Al consumirlo te brinda una resistencia mayor al daño"));
+
+    this.specialItemMap.put("Banana", new SpecialItem(Material.PAPER,"Banana",
+            BANANA_CMD, "No tiene ningún uso, pero te la puedes comer y rellenar 4 muslos"));
+
+    this.specialItemMap.put("KitAstronauta", new SpecialItem(Material.PAPER,"Kit de Astronauta",
+            KIT_ASTRONAUTA_CMD, "Si posees el item \"Agua\" te da saturación por 10minutos"));
+
+    this.specialItemMap.put("Agua", new SpecialItem(Material.PAPER,"Agua",
+            AGUA_CMD, "Al consumirlo obtienes 1 muslo de comida, pero si lo juntas con otros objetos, puedes obtener grandes beneficios"));
+
+    this.specialItemMap.put("PolloChillon", new SpecialItem(Material.GOAT_HORN,"Pollo Chillón",
+            POLLO_CHILLON_CMD, "Al usarlo se reproduce un sonido chistoso"));
+
+    this.specialItemMap.put("Planta", new SpecialItem(Material.PAPER,"Planta",
+            PLANTA_CMD, "Al darle click sobre el suelo, se pone la maceta, te brinda bayas cada 5 minutos"));
+
+    SpecialItem sierra = this.specialItemMap.get("Sierra");
+    if (sierra != null) {
+      ItemStack sierraIS = sierra.getItemStack();
+      sierraIS = addCustomTag(sierraIS, "usesLeft", 5);
+      this.specialItemMap.put("Sierra", new SpecialItem(sierraIS));
+    }
 
   }
 
-
-  public ItemStack buildCuerda() {
-    ItemStack is = new ItemStack(Material.PAPER, 1);
-    ItemMeta meta = is.getItemMeta();
-    meta.setCustomModelData(CUERDA_CMD);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<green><bold> Cuerda"));
-    is.setItemMeta(meta);
-
-    return is;
-  }
-
-  public ItemStack buildFishingRod() {
-    ItemStack is = new ItemStack(Material.FISHING_ROD, 1);
-    ItemMeta meta = is.getItemMeta();
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Cana de Pescar"));
-    meta.setCustomModelData(FISHING_ROD_CMD);
-    Damageable damageable = (Damageable) meta;
-    damageable.setDamage(44);
-    is.setItemMeta(meta);
-    return is;
-  }
-
-  public ItemStack buildGafasTacticas() {
-    ItemStack is = new ItemStack(Material.PAPER, 1);
-    ItemMeta meta = is.getItemMeta();
-    meta.setCustomModelData(GAFAS_TACTICOS_CMD);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Gafas Tacticas"));
-    is.setItemMeta(meta);
-
-    return is;
-  }
-
-  public ItemStack buildRifle() {
-    ItemStack is = new ItemStack(Material.CROSSBOW, 1);
-    ItemMeta meta = is.getItemMeta();
-    meta.setCustomModelData(RIFLE_CMD);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Rifle"));
-    is.setItemMeta(meta);
-
-    return is;
-  }
-
-  public ItemStack buildPatoDeHule() {
-    ItemStack is = new ItemStack(Material.PAPER, 1);
-    ItemMeta meta = is.getItemMeta();
-    meta.setCustomModelData(PATO_DE_HULE_CMD);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Patito de Hule"));
-    is.setItemMeta(meta);
-
-    return is;
-  }
-
-  public ItemStack buildSierra() {
-    ItemStack is = new ItemStack(Material.PAPER, 1);
-    ItemMeta meta = is.getItemMeta();
-    meta.setCustomModelData(SIERRA_CMD);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Sierra"));
-    is.setItemMeta(meta);
-    is = addCustomTag(is, "usesLeft", 5);
-
-    return is;
-  }
   public ItemStack addCustomTag(ItemStack itemStack, String key, int value) {
     ItemMeta itemMeta = itemStack.getItemMeta();
     itemMeta.getPersistentDataContainer().set(new NamespacedKey(DestinyTools.instance(), key), PersistentDataType.INTEGER, value);
     itemStack.setItemMeta(itemMeta);
     return itemStack;
   }
-
-
-  public ItemStack buildPedazoCarne() {
-    ItemStack is = new ItemStack(Material.PAPER, 1);
-    ItemMeta meta = is.getItemMeta();
-    meta.setCustomModelData(PEDAZO_DE_CARNE_CMD);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Pedazo de Carne"));
-    is.setItemMeta(meta);
-
-    return is;
-  }
-
-  public ItemStack buildBotellaDeAcido() {
-    ItemStack is = new ItemStack(Material.SPLASH_POTION, 1);
-    PotionMeta meta = (PotionMeta) is.getItemMeta();
-    meta.setColor(Color.fromRGB(102, 51, 0));
-    meta.setCustomModelData(BOTELLA_DE_ACIDO_CMD);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Botella de Acido"));
-    is.setItemMeta(meta);
-    return is;
-  }
-
-  public ItemStack buildBotellaDeSulfuro() {
-    ItemStack is = new ItemStack(Material.SPLASH_POTION, 1);
-    PotionMeta meta = (PotionMeta) is.getItemMeta();
-    meta.setColor(Color.fromRGB(102, 51, 0));
-    meta.setCustomModelData(BOTELLA_DE_SULFURO_CMD);
-    meta.displayName(DestinyTools.instance().getMm().deserialize("<white><bold> Botella de Sulfuro"));
-    is.setItemMeta(meta);
-    return is;
-  }
-
 
   private void skillCuerda(Player player) {
     int CUERDA_Y_TELEPORT = 8;
@@ -359,6 +255,41 @@ public class ItemsManager implements Listener {
     }
   }
 
+  private void skillPlanta(Block clickedBlock, BlockFace blockFace, ItemStack item) {
+    if (clickedBlock != null  /* && event.getClickedBlock().getType() != Material.AIR */) {
+      Location loc = clickedBlock.getLocation().add(0.5, 1, 0.5);
+      if (loc.getBlock().getType() == Material.AIR) {
+        ItemFrame itemFrame = (ItemFrame) loc.getWorld().spawnEntity(loc, EntityType.ITEM_FRAME);
+        itemFrame.setFacingDirection(blockFace);
+        if (item != null) {
+          itemFrame.setItem(item);
+          item.setAmount(item.getAmount() - 1);
+        }
+        Bukkit.getScheduler().runTaskTimer(DestinyTools.instance(), () -> {
+          if (!itemFrame.getItem().getType().equals(Material.AIR)) {
+            loc.getWorld().dropItemNaturally(loc, new ItemStack(Material.SWEET_BERRIES, 1));
+          }
+        }, 0, 5 * 60 * 20);
+      }
+    }
+  }
+
+  private void skillMinaElectrica(Block clickedBlock, BlockFace blockFace, ItemStack item) {
+    if (clickedBlock != null  /* && event.getClickedBlock().getType() != Material.AIR */) {
+      Location loc = clickedBlock.getLocation().add(0.5, 1, 0.5);
+      if (loc.getBlock().getType() == Material.AIR) {
+        ItemFrame itemFrame = (ItemFrame) loc.getWorld().spawnEntity(loc, EntityType.ITEM_FRAME);
+        itemFrame.setFacingDirection(blockFace);
+
+        if (item != null) {
+          itemFrame.setItem(item);
+          item.setAmount(item.getAmount() - 1); // discarded
+        }
+      }
+    }
+  }
+
+
   @EventHandler
   public void onPlayerInteract(PlayerInteractEvent event) {
     if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -367,10 +298,10 @@ public class ItemsManager implements Listener {
       if (item != null && item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
         int model = item.getItemMeta().getCustomModelData();
         switch (model) {
-          case 101: // gafas tácticas
+          case GAFAS_TACTICOS_CMD: // gafas tácticas
             skillGafasTacticas(event.getPlayer(), item);
             break;
-          case 104: // cuerda
+          case CUERDA_CMD: // cuerda
             skillCuerda(event.getPlayer());
             break;
           case 1: // Cana de pescar or Rifle
@@ -428,27 +359,12 @@ public class ItemsManager implements Listener {
             skillPolloChillon(player);
             break;
           case MINA_ELECTRICA_CMD:
+            skillMinaElectrica(event.getClickedBlock(), event.getBlockFace(), item);
+            item.setAmount(item.getAmount() - 1);
             break;
           case PLANTA_CMD:
-            if (event.getClickedBlock() != null  /* && event.getClickedBlock().getType() != Material.AIR */) {
-              Block clickedBlock = event.getClickedBlock();
-              Location loc = clickedBlock.getLocation().add(0.5, 1, 0.5);
-              if (loc.getBlock().getType() == Material.AIR) {
-                // loc.getBlock().setType(Material.ITEM_FRAME);
-                // loc.getBlock().setData((byte) event.getBlockFace().ordinal());
-                ItemFrame itemFrame = (ItemFrame) loc.getWorld().spawnEntity(loc, EntityType.ITEM_FRAME);
-                itemFrame.setFacingDirection(event.getBlockFace());
-                if (item != null) {
-                  itemFrame.setItem(item);
-                  item.setAmount(item.getAmount() - 1);
-                }
-                Bukkit.getScheduler().runTaskTimer(DestinyTools.instance(), () -> {
-                  if (!itemFrame.getItem().getType().equals(Material.AIR)) {
-                    loc.getWorld().dropItemNaturally(loc, new ItemStack(Material.SWEET_BERRIES, 1));
-                  }
-                }, 0, 5 * 60 * 20);
-              }
-            }
+            skillPlanta(event.getClickedBlock(), event.getBlockFace(),item);
+            item.setAmount(item.getAmount() - 1);
             break;
         } // END SWITCH
       }
@@ -458,7 +374,6 @@ public class ItemsManager implements Listener {
 
   @EventHandler
   public void onShootCrossBowEvent(EntityShootBowEvent e) {
-    Player p = (Player) e.getEntity();
     ItemStack item = e.getBow();
     // If special
     if (item != null && item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
@@ -495,11 +410,10 @@ public class ItemsManager implements Listener {
 
   @EventHandler
   public void onInventoryInteract(InventoryClickEvent e) {
-    if (!(e.getWhoClicked() instanceof Player)) {
+    if (!(e.getWhoClicked() instanceof final Player p)) {
       return;
     }
 
-    final Player p = (Player) e.getWhoClicked();
     final ItemStack current = e.getCurrentItem();
     final int PATO_SLOT = 17;
 
@@ -521,14 +435,14 @@ public class ItemsManager implements Listener {
 
   @EventHandler
   public void onPlayerAttackAnotherOne(EntityDamageByEntityEvent e) {
-    if ((e.getDamager() instanceof Player damager) && ( (e.getEntity() instanceof Player) || (e.getEntity() instanceof Cow) )) {
+    if ((e.getDamager() instanceof Player damager) && ((e.getEntity() instanceof Player) || (e.getEntity() instanceof Cow))) {
       LivingEntity damaged = (LivingEntity) e.getEntity();
       ItemStack weapon = damager.getPlayer().getInventory().getItemInMainHand();
       if (weapon.hasItemMeta()
               && weapon.getItemMeta().hasCustomModelData()
               && weapon.getItemMeta().getCustomModelData() == SIERRA_CMD) {
 
-        boolean cancelDamage =  skillSierra(weapon, damager, damaged);
+        boolean cancelDamage = skillSierra(weapon, damager, damaged);
         e.setCancelled(cancelDamage);
       }
     }
@@ -539,7 +453,7 @@ public class ItemsManager implements Listener {
     int usesLeft = getUsesLeft(sierra);
     boolean cancelDamage = false;
     if (usesLeft > 0) {
-      ItemStack reward = buildPedazoCarne();
+      ItemStack reward = this.specialItemMap.get("PedazoDeCarne").getItemStack();
       damager.getInventory().addItem(reward);
       damaged.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 3 * 60 * 20, 0));
       damaged.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 3 * 60 * 20, 0));
@@ -548,12 +462,13 @@ public class ItemsManager implements Listener {
       damager.getInventory().setItemInMainHand(sierra);
     } else {
       Location loc = damager.getLocation();
-      loc.getWorld().playSound(loc,Sound.ENTITY_ITEM_BREAK, 1f,1f);
+      loc.getWorld().playSound(loc, Sound.ENTITY_ITEM_BREAK, 1f, 1f);
       damager.sendActionBar(mm.deserialize("<white> La sierra se ha roto"));
       cancelDamage = true;
     }
     return cancelDamage;
   }
+
   @EventHandler
   public void onProjectileHit(ProjectileHitEvent e) {
     Projectile projectile = e.getEntity();
@@ -588,6 +503,7 @@ public class ItemsManager implements Listener {
         break;
     }
   }
+
   public int getUsesLeft(ItemStack itemStack) {
     ItemMeta itemMeta = itemStack.getItemMeta();
     Integer usesLeft = itemMeta.getPersistentDataContainer().get(new NamespacedKey(DestinyTools.instance(), "usesLeft"), PersistentDataType.INTEGER);
@@ -604,7 +520,35 @@ public class ItemsManager implements Listener {
     itemStack.setItemMeta(itemMeta);
     return itemStack;
   }
+  /*
+  @EventHandler
+  public void onPlayerMove(PlayerMoveEvent event) {
+    Player player = event.getPlayer();
+    Location from = event.getFrom();
+    Location to = event.getTo();
 
+    if (from.distance(to) > 0) { // Si el jugador se ha movido
+      float currentExp = player.getExp();
+      float newExp = currentExp + 0.1f; // Incrementamos la experiencia en 0.1
+
+      if (newExp >= 1f) { // Si la experiencia supera 1, el jugador muere
+        player.setHealth(0);
+      } else {
+        player.setExp(newExp); // Actualizamos la barra de experiencia del jugador
+      }
+    } else { // Si el jugador no se ha movido
+      float currentExp = player.getExp();
+      float newExp = currentExp - 0.05f; // Decrementamos la experiencia en 0.05
+
+      if (newExp < 0) { // Si la experiencia es negativa, el jugador muere
+        player.setHealth(0);
+      } else {
+        player.setExp(newExp); // Actualizamos la barra de experiencia del jugador
+      }
+    }
+  }
+
+*/
 
 }
 

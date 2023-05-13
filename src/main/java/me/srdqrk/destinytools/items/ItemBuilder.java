@@ -19,6 +19,9 @@ public class ItemBuilder {
   private boolean unbreakable = false;
   private ItemFlag[] flags = {};
 
+  private ItemMeta meta;
+
+
   public ItemBuilder(Material material, Component name) {
     this.material = material;
     this.name = name;
@@ -53,10 +56,14 @@ public class ItemBuilder {
     this.flags = flags;
     return this;
   }
+  public ItemBuilder metaData(ItemMeta meta) {
+    this.meta = meta;
+    return this;
+  }
 
   public ItemStack build() {
     ItemStack itemStack = new ItemStack(material, amount);
-    ItemMeta meta = itemStack.getItemMeta();
+    ItemMeta meta = (this.meta != null) ? this.meta : itemStack.getItemMeta();
 
     meta.displayName(name);
     meta.setCustomModelData(customModelData);
