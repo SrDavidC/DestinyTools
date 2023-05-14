@@ -404,6 +404,7 @@ public class ItemsManager implements Listener {
             e.setCancelled(true);
             e.getProjectile().remove();
             Snowball snowball = e.getEntity().launchProjectile(Snowball.class);
+            snowball.customName(mm.deserialize("MinigunAMMO"));
             snowball.setVelocity(e.getProjectile().getVelocity());
             break;
         }
@@ -417,6 +418,11 @@ public class ItemsManager implements Listener {
       if (arrow.customName() != null
               && DestinyTools.instance().getMm().serialize(Objects.requireNonNull(arrow.customName())).equals("RifleAMMO")) {
         event.setDamage(1);
+      }
+    } else if (event.getEntity() instanceof Player && event.getDamager() instanceof Snowball snowball) {
+      if (snowball.customName().equals("MinigunAMMO")) {
+        double damage = 0.01;
+        event.setDamage(damage);
       }
     }
   }
@@ -468,7 +474,7 @@ public class ItemsManager implements Listener {
     if (usesLeft > 0) {
       ItemStack reward = this.specialItemMap.get("PedazoDeCarne").getItemStack();
       damager.getInventory().addItem(reward);
-      damaged.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 3 * 60 * 20, 0));
+      damaged.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,  15 * 20, 0));
       damaged.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 3 * 60 * 20, 0));
       usesLeft--;
       sierra = setUsesLeft(sierra, usesLeft);
@@ -516,6 +522,18 @@ public class ItemsManager implements Listener {
         break;
     }
   }
+
+  @EventHandler
+  public void onArrowHit(ProjectileHitEvent event) {
+    Projectile projectile = event.getEntity();
+    if (projectile instanceof Arrow) {
+      Arrow arrow = (Arrow) projectile;
+      if (arrow.getCustomName() != null && arrow.getCustomName().equals("RifleAMMO") && !arrow.isDead() && arrow.getAttachedBlock() != null) {
+        arrow.remove();
+      }
+    }
+  }
+
 
   public int getUsesLeft(ItemStack itemStack) {
     ItemMeta itemMeta = itemStack.getItemMeta();

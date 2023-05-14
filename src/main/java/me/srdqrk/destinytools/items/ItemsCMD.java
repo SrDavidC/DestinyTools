@@ -3,9 +3,11 @@ package me.srdqrk.destinytools.items;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import me.srdqrk.destinytools.DestinyTools;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @CommandAlias("DestinyTools|dt|item|items")
+@CommandPermission("destinytools.executer")
 public class ItemsCMD extends BaseCommand {
 
   public ItemsCMD() {
@@ -24,6 +27,7 @@ public class ItemsCMD extends BaseCommand {
 
   @Subcommand("get")
   @CommandCompletion("@items")
+  @CommandPermission("destinytools.executer")
   public void onGetItem(Player sender, String itemName) {
     SpecialItem specialItem = DestinyTools.instance().getItemsManager().getSpecialItemMap().get(itemName);
     String message;
@@ -39,6 +43,7 @@ public class ItemsCMD extends BaseCommand {
 
   }
   @Subcommand("getall")
+  @CommandPermission("destinytools.executer")
   public void onGetAllItems(Player sender) {
     HashMap<String, SpecialItem> map = DestinyTools.instance().getItemsManager().getSpecialItemMap();
     for (SpecialItem item : map.values()) {
@@ -49,6 +54,7 @@ public class ItemsCMD extends BaseCommand {
   }
   @Subcommand("give")
   @CommandCompletion("@players @items")
+  @CommandPermission("destinytools.executer")
   public void onGiveItem(CommandSender sender, OnlinePlayer player, String itemName) {
     SpecialItem specialItem = DestinyTools.instance().getItemsManager().getSpecialItemMap().get(itemName);
     String message;
@@ -60,6 +66,14 @@ public class ItemsCMD extends BaseCommand {
       message = "El item " + itemName + " no fue encontrado";
       message += "\nCantidad de items actuales: " + DestinyTools.instance().getItemsManager().getSpecialItemMap().size();
       sender.sendMessage(DestinyTools.instance().getMm().deserialize("<red>" + message));
+    }
+  }
+  @CommandAlias("hunger")
+  @CommandPermission("destinytools.executer")
+  public void onHunger(CommandSender sender) {
+    if (sender instanceof Player player) {
+      player.setFoodLevel(player.getFoodLevel() - 10);
+      player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BREATH, 1F ,1F);
     }
   }
 }
