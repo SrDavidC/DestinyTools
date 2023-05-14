@@ -40,16 +40,17 @@ public class ItemsManager implements Listener {
   final int SIERRA_CMD = 102;
   final int PATO_DE_HULE_CMD = 103;
   final int CUERDA_CMD = 104;
-  final int PLANTA_CMD = 105;
-  final int SUPLEMENTO_ALIMENTICIO_CMD = 106;
-  final int ADRENALINA_CMD = 107;
-  final int MINA_ELECTRICA_CMD = 108;
-  final int BANANA_CMD = 109;
-  final int KIT_ASTRONAUTA_CMD = 110;
-  final int AGUA_CMD = 111;
+  final int BOTELLA_DE_ACIDO_CMD = 105;
+  final int BOTELLA_DE_SULFURO_CMD = 106;
+  final int PLANTA_CMD = 107;
+  final int FRESA_CMD = 108;
+  final int SUPLEMENTO_ALIMENTICIO_CMD = 109;
+  final int ADRENALINA_CMD = 110;
+  final int BANANA_CMD = 111;
   final int POLLO_CHILLON_CMD = 112;
-  final int BOTELLA_DE_ACIDO_CMD = 500;
-  final int BOTELLA_DE_SULFURO_CMD = 501;
+  final int KIT_ASTRONAUTA_CMD = 113;
+  final int AGUA_CMD = 114;
+  final int MINA_ELECTRICA_CMD = 999;
 
 
   private final @Getter HashMap<String, SpecialItem> specialItemMap;
@@ -97,7 +98,7 @@ public class ItemsManager implements Listener {
     this.specialItemMap.put("SuplementoAlimenticio", new SpecialItem(Material.PAPER,"Suplemento Alimenticio",
             SUPLEMENTO_ALIMENTICIO_CMD, "Al darle click secundario (sin abrir inventario) te llena los muslos de hambre"));
 
-    this.specialItemMap.put("Adrenalina", new SpecialItem(Material.PAPER,"Adrenalina",
+    this.specialItemMap.put("Adrenalina", new SpecialItem(Material.PAPER,"Jeringa de Adrenalina",
             ADRENALINA_CMD, "Al consumirlo te brinda una resistencia mayor al daño"));
 
     this.specialItemMap.put("Banana", new SpecialItem(Material.PAPER,"Banana",
@@ -114,6 +115,8 @@ public class ItemsManager implements Listener {
 
     this.specialItemMap.put("Planta", new SpecialItem(Material.PAPER,"Planta",
             PLANTA_CMD, "Al darle click sobre el suelo, se pone la maceta, te brinda bayas cada 5 minutos"));
+    this.specialItemMap.put("Fresa", new SpecialItem(Material.PAPER,"Fresa",
+            FRESA_CMD, ""));
 
     SpecialItem sierra = this.specialItemMap.get("Sierra");
     if (sierra != null) {
@@ -137,6 +140,10 @@ public class ItemsManager implements Listener {
     int NEW_Y = location.getBlockY() - CUERDA_Y_TELEPORT;
 
     player.teleport(new Location(location.getWorld(), location.getBlockX(), NEW_Y, location.getBlockZ()));
+
+    ItemStack is = player.getInventory().getItemInMainHand();
+    is.setAmount(is.getAmount() -  1);
+    player.getInventory().setItemInMainHand(is);
   }
 
   private ItemMeta skillCanaDePescar(ItemStack itemStack) {
@@ -279,7 +286,7 @@ public class ItemsManager implements Listener {
         }
         Bukkit.getScheduler().runTaskTimer(DestinyTools.instance(), () -> {
           if (!itemFrame.getItem().getType().equals(Material.AIR)) {
-            loc.getWorld().dropItemNaturally(loc, new ItemStack(Material.SWEET_BERRIES, 1));
+            loc.getWorld().dropItemNaturally(loc, this.specialItemMap.get("Fresa").getItemStack());
           }
         }, 0, 5 * 60 * 20);
       }
