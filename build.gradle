@@ -71,8 +71,25 @@ processResources {
     }
 }
 
+def generateHash() {
+    Integer.toString(project.name.hashCode(), 36).toUpperCase().take(4)
+}
+
 shadowJar {
     relocate 'co.aikar.commands', 'shadded.acf'
+    destinationDirectory = file('D:\\LocalHosts\\paper193\\plugins')
+
+    finalizedBy('renameJar')
+
+    task renameJar {
+        doLast {
+            String hash = generateHash()
+            def jarFile = file("${destinationDirectory}/${archiveFileName}")
+            def renamedJarFile = file("${destinationDirectory}/${archivesBaseName}-${hash}.jar")
+            jarFile.renameTo(renamedJarFile)
+        }
+    }
 }
+
 
 build.dependsOn shadowJar

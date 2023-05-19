@@ -66,56 +66,56 @@ public class ItemsManager implements Listener {
 
   public void buildItems() {
     this.specialItemMap.put("Cuerda",
-            new SpecialItem(Material.PAPER,"Cuerda",CUERDA_CMD,"Al usar, el jugador es tpeado 8 bloques abajo"));
+            new SpecialItem(Material.PAPER, "Cuerda", CUERDA_CMD, "Al usar, el jugador es tpeado 8 bloques abajo"));
 
-    this.specialItemMap.put("CañaDePescar",
-            new SpecialItem(Material.FISHING_ROD,"Caña De Pescar",FISHING_ROD_CMD,"Uso limitado de 10"));
+    this.specialItemMap.put("CanaDePescar",
+            new SpecialItem(Material.FISHING_ROD, "Caña De Pescar", FISHING_ROD_CMD, "Uso limitado de 10"));
 
     this.specialItemMap.put("LentesTácticos",
-            new SpecialItem(Material.PAPER,"Lentes Tácticos",GAFAS_TACTICOS_CMD,""));
+            new SpecialItem(Material.PAPER, "Lentes Tácticos", GAFAS_TACTICOS_CMD, ""));
 
     this.specialItemMap.put("Rifle",
-            new SpecialItem(Material.CROSSBOW,"Rifle",RIFLE_CMD,"Tiene 32 balas de puro dolor."));
+            new SpecialItem(Material.CROSSBOW, "Rifle", RIFLE_CMD, "Tiene 32 balas de puro dolor."));
 
     this.specialItemMap.put("PatoDeHule",
-            new SpecialItem(Material.PAPER,"Pato De Hule",PATO_DE_HULE_CMD,"Si lo colocas en en slot especial, te da 2 corazones extra de vida"));
+            new SpecialItem(Material.PAPER, "Pato De Hule", PATO_DE_HULE_CMD, "Si lo colocas en en slot especial, te da 2 corazones extra de vida"));
 
     this.specialItemMap.put("Sierra",
-            new SpecialItem(Material.PAPER,"Sierra",SIERRA_CMD,"Al golpear un jugador le cortas un pedazo de carne comestible"));
+            new SpecialItem(Material.PAPER, "Sierra", SIERRA_CMD, "Al golpear un jugador le cortas un pedazo de carne comestible"));
 
     this.specialItemMap.put("PedazoDeCarne",
-            new SpecialItem(Material.PAPER,"PedazoDeCarne",PEDAZO_DE_CARNE_CMD,"Te rellena dos muslos de comida"));
+            new SpecialItem(Material.PAPER, "PedazoDeCarne", PEDAZO_DE_CARNE_CMD, "Te rellena dos muslos de comida"));
 
-    this.specialItemMap.put("BotellaDeAcido", new SpecialItem(Material.SPLASH_POTION,"Botella de Acido",
+    this.specialItemMap.put("BotellaDeAcido", new SpecialItem(Material.SPLASH_POTION, "Botella de Acido",
             BOTELLA_DE_ACIDO_CMD, "Daña a las víctimas", Color.fromRGB(102, 51, 0)));
 
-    this.specialItemMap.put("BotellaDeSulfuro", new SpecialItem(Material.SPLASH_POTION,"Botella de Sulfuro",
+    this.specialItemMap.put("BotellaDeSulfuro", new SpecialItem(Material.SPLASH_POTION, "Botella de Sulfuro",
             BOTELLA_DE_SULFURO_CMD, "Al lanzarla, le aplica efecto de hambre, veneno y mareo a la víctima", Color.fromRGB(102, 51, 0)));
 
-    this.specialItemMap.put("MinigunDeJuguete", new SpecialItem(Material.CROSSBOW,"Minigun de Juguete",
+    this.specialItemMap.put("MinigunDeJuguete", new SpecialItem(Material.CROSSBOW, "Minigun de Juguete",
             MINIGUN_DE_JUGUETE_CMD, "Minigun que dispara 100 balas"));
 
-    this.specialItemMap.put("SuplementoAlimenticio", new SpecialItem(Material.PAPER,"Suplemento Alimenticio",
+    this.specialItemMap.put("SuplementoAlimenticio", new SpecialItem(Material.PAPER, "Suplemento Alimenticio",
             SUPLEMENTO_ALIMENTICIO_CMD, "Al darle click secundario (sin abrir inventario) te llena los muslos de hambre"));
 
-    this.specialItemMap.put("Adrenalina", new SpecialItem(Material.PAPER,"Jeringa de Adrenalina",
+    this.specialItemMap.put("Adrenalina", new SpecialItem(Material.PAPER, "Jeringa de Adrenalina",
             ADRENALINA_CMD, "Al consumirlo te brinda una resistencia mayor al daño"));
 
-    this.specialItemMap.put("Banana", new SpecialItem(Material.PAPER,"Banana",
+    this.specialItemMap.put("Banana", new SpecialItem(Material.PAPER, "Banana",
             BANANA_CMD, "No tiene ningún uso, pero te la puedes comer y rellenar 4 muslos"));
 
-    this.specialItemMap.put("KitAstronauta", new SpecialItem(Material.PAPER,"Kit de Astronauta",
+    this.specialItemMap.put("KitAstronauta", new SpecialItem(Material.PAPER, "Kit de Astronauta",
             KIT_ASTRONAUTA_CMD, "Si posees el item \"Agua\" te da saturación por 10minutos"));
 
-    this.specialItemMap.put("Agua", new SpecialItem(Material.PAPER,"Agua",
+    this.specialItemMap.put("Agua", new SpecialItem(Material.PAPER, "Agua",
             AGUA_CMD, "Al consumirlo obtienes 1 muslo de comida, pero si lo juntas con otros objetos, puedes obtener grandes beneficios"));
 
-    this.specialItemMap.put("PolloChillon", new SpecialItem(Material.GOAT_HORN,"Pollo Chillón",
+    this.specialItemMap.put("PolloChillon", new SpecialItem(Material.GOAT_HORN, "Pollo Chillón",
             POLLO_CHILLON_CMD, "Al usarlo se reproduce un sonido chistoso"));
 
-    this.specialItemMap.put("Planta", new SpecialItem(Material.PAPER,"Planta",
+    this.specialItemMap.put("Planta", new SpecialItem(Material.PAPER, "Planta",
             PLANTA_CMD, "Al darle click sobre el suelo, se pone la maceta, te brinda bayas cada 5 minutos"));
-    this.specialItemMap.put("Fresa", new SpecialItem(Material.PAPER,"Fresa",
+    this.specialItemMap.put("Fresa", new SpecialItem(Material.PAPER, "Fresa",
             FRESA_CMD, ""));
 
     SpecialItem sierra = this.specialItemMap.get("Sierra");
@@ -123,6 +123,14 @@ public class ItemsManager implements Listener {
       ItemStack sierraIS = sierra.getItemStack();
       sierraIS = addCustomTag(sierraIS, "usesLeft", 5);
       this.specialItemMap.put("Sierra", new SpecialItem(sierraIS));
+    }
+    SpecialItem canaDePescar = this.specialItemMap.get("CanaDePescar");
+    if (canaDePescar != null) {
+      ItemStack is = canaDePescar.getItemStack();
+      Damageable damageable = (Damageable) is.getItemMeta();
+      damageable.setDamage(54);
+      is.setItemMeta(damageable);
+      this.specialItemMap.put("CanaDePescar", new SpecialItem(is));
     }
 
   }
@@ -142,19 +150,8 @@ public class ItemsManager implements Listener {
     player.teleport(new Location(location.getWorld(), location.getBlockX(), NEW_Y, location.getBlockZ()));
 
     ItemStack is = player.getInventory().getItemInMainHand();
-    is.setAmount(is.getAmount() -  1);
+    is.setAmount(is.getAmount() - 1);
     player.getInventory().setItemInMainHand(is);
-  }
-
-  private ItemMeta skillCanaDePescar(ItemStack itemStack) {
-    Damageable damageableItem = ((Damageable) itemStack.getItemMeta());
-    if (damageableItem.getDamage() < 64) {
-      damageableItem.setDamage(damageableItem.getDamage() + 1);
-    } else {
-      damageableItem = null;
-    }
-
-    return damageableItem;
   }
 
   private void skillGafasTacticas(Player player, ItemStack item) {
@@ -176,13 +173,11 @@ public class ItemsManager implements Listener {
     final int CROWSSBOW_DURABILITY = 434;
     if (damageable.getDamage() <= CROWSSBOW_DURABILITY) {
       crossbowMeta.addChargedProjectile(new ItemStack(Material.ARROW, 1));
-      damageable = (Damageable) crossbowMeta;
       final int maxTotalUses = 465;
       final int ourUses = 32;
       final int uses = maxTotalUses / ourUses;
       final int damage = damageable.getDamage() + uses;
       damageable.setDamage(damage);
-      meta = damageable;
     } else {
       player.playSound(
               player.getLocation(),
@@ -199,13 +194,11 @@ public class ItemsManager implements Listener {
     final int CROWSSBOW_DURABILITY = 465;
     if (damageable.getDamage() <= CROWSSBOW_DURABILITY) {
       crossbowMeta.addChargedProjectile(new ItemStack(Material.ARROW, 1));
-      damageable = (Damageable) crossbowMeta;
       final int maxTotalUses = 465;
       final int ourUses = 100;
       final int uses = maxTotalUses / ourUses;
       final int damage = damageable.getDamage() + uses;
       damageable.setDamage(damage);
-      meta = damageable;
     } else {
       player.playSound(
               player.getLocation(),
@@ -220,7 +213,7 @@ public class ItemsManager implements Listener {
       player.setFoodLevel(player.getFoodLevel() + 8);
       player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1f, 1f);
       ItemStack is = player.getInventory().getItemInMainHand();
-      is.setAmount(is.getAmount() -  1);
+      is.setAmount(is.getAmount() - 1);
       player.getInventory().setItemInMainHand(is);
     }
   }
@@ -230,7 +223,7 @@ public class ItemsManager implements Listener {
       player.setFoodLevel(player.getFoodLevel() + 2);
       player.playSound(player.getLocation(), Sound.ITEM_HONEY_BOTTLE_DRINK, 1f, 0.4f);
       ItemStack is = player.getInventory().getItemInMainHand();
-      is.setAmount(is.getAmount() -  1);
+      is.setAmount(is.getAmount() - 1);
       player.getInventory().setItemInMainHand(is);
     }
   }
@@ -245,7 +238,7 @@ public class ItemsManager implements Listener {
           player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 10 * 60 * 20, 0));
           player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1f, 1f);
           ItemStack is = player.getInventory().getItemInMainHand();
-          is.setAmount(is.getAmount() -  1);
+          is.setAmount(is.getAmount() - 1);
           player.getInventory().setItemInMainHand(is);
           break;
         }
@@ -258,7 +251,7 @@ public class ItemsManager implements Listener {
       // 10 * 60 * 20 = 10 minutes on ticks, 1 second equals 20 ticks
       player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10 * 60 * 20, 1));
       ItemStack is = player.getInventory().getItemInMainHand();
-      is.setAmount(is.getAmount() -  1);
+      is.setAmount(is.getAmount() - 1);
       player.getInventory().setItemInMainHand(is);
     }
   }
@@ -266,16 +259,16 @@ public class ItemsManager implements Listener {
   private void skillPolloChillon(Player player) {
     if (player != null) {
       Location location = player.getLocation();
-      String soundName = "SONIDO_CUSTOM"; // TODO: change name
+      String soundName = "mbpstudios:zairdeluque.sfx_alarm"; // TODO: change name
       float volume = 1.0f;
       float pitch = 1.0f;
-      location.getWorld().playSound(location, Sound.ENTITY_PLAYER_BURP, volume, pitch);
+      location.getWorld().playSound(location, soundName, volume, pitch);
 
     }
   }
 
   private void skillPlanta(Block clickedBlock, BlockFace blockFace, ItemStack item) {
-    if (clickedBlock != null && clickedBlock.getType() != null && clickedBlock.getType() != Material.AIR ) {
+    if (clickedBlock != null && clickedBlock.getType() != Material.AIR) {
       Location loc = clickedBlock.getLocation().add(0.5, 1, 0.5);
       if (loc.getBlock().getType() == Material.AIR) {
         ItemFrame itemFrame = (ItemFrame) loc.getWorld().spawnEntity(loc, EntityType.ITEM_FRAME);
@@ -323,19 +316,8 @@ public class ItemsManager implements Listener {
           case CUERDA_CMD: // cuerda
             skillCuerda(event.getPlayer());
             break;
-          case 1: // Cana de pescar or Rifle
-            if (item.getType() == Material.FISHING_ROD) {
-              // change item durability with the skill
-              ItemMeta meta = skillCanaDePescar(item);
-              if (meta != null) {
-                item.setItemMeta(meta);
-              } else {
-                event.getPlayer().playSound(
-                        event.getPlayer().getLocation(),
-                        Sound.ENTITY_ITEM_BREAK, 1F, 1F);
-                event.setCancelled(true);
-              }
-            } else if (item.getType() == Material.CROSSBOW) {
+          case RIFLE_CMD: // Rifle
+            if (item.getType() == Material.CROSSBOW) {
               ItemMeta meta = skillRifle(player, item);
               if (meta != null) {
                 item.setItemMeta(meta);
@@ -377,7 +359,7 @@ public class ItemsManager implements Listener {
             skillMinaElectrica(event.getClickedBlock(), event.getBlockFace(), item);
             break;
           case PLANTA_CMD:
-            skillPlanta(event.getClickedBlock(), event.getBlockFace(),item);
+            skillPlanta(event.getClickedBlock(), event.getBlockFace(), item);
             break;
         } // END SWITCH
       }
@@ -419,7 +401,7 @@ public class ItemsManager implements Listener {
               && DestinyTools.instance().getMm().serialize(Objects.requireNonNull(arrow.customName())).equals("RifleAMMO")) {
         event.setDamage(1);
       }
-    } else if (event.getEntity() instanceof Player && event.getDamager() instanceof Snowball snowball) {
+    } else if ((event.getEntity() instanceof Player || event.getEntity() instanceof Cow) && event.getDamager() instanceof Snowball snowball) {
       if (snowball.customName().equals("MinigunAMMO")) {
         double damage = 0.01;
         event.setDamage(damage);
@@ -474,7 +456,7 @@ public class ItemsManager implements Listener {
     if (usesLeft > 0) {
       ItemStack reward = this.specialItemMap.get("PedazoDeCarne").getItemStack();
       damager.getInventory().addItem(reward);
-      damaged.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,  15 * 20, 0));
+      damaged.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 15 * 20, 0));
       damaged.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 3 * 60 * 20, 0));
       usesLeft--;
       sierra = setUsesLeft(sierra, usesLeft);
@@ -500,15 +482,15 @@ public class ItemsManager implements Listener {
     }
     int customModelData = meta.getCustomModelData();
     switch (customModelData) {
-      case 500:
+      case BOTELLA_DE_ACIDO_CMD:
         Entity hitEntity = e.getHitEntity();
         if (hitEntity != null) {
-          if (hitEntity instanceof LivingEntity) {
-            ((LivingEntity) hitEntity).damage(8);
+          if (hitEntity instanceof Player player) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 2 * 20, 0));
           }
         }
         break;
-      case 501:
+      case BOTELLA_DE_SULFURO_CMD:
         hitEntity = e.getHitEntity();
         if (hitEntity != null) {
           if (hitEntity instanceof LivingEntity livingEntity) {
@@ -525,11 +507,12 @@ public class ItemsManager implements Listener {
 
   @EventHandler
   public void onArrowHit(ProjectileHitEvent event) {
-    Projectile projectile = event.getEntity();
-    if (projectile instanceof Arrow) {
-      Arrow arrow = (Arrow) projectile;
-      if (arrow.getCustomName() != null && arrow.getCustomName().equals("RifleAMMO") && !arrow.isDead() && arrow.getAttachedBlock() != null) {
-        arrow.remove();
+    if (event.getEntity() instanceof Arrow) {
+      Arrow arrow = (Arrow) event.getEntity();
+      if (arrow.customName() != null && arrow.customName().equals("RifleAMMO")) {
+        if (event.getHitEntity() == null) {
+          arrow.remove();
+        }
       }
     }
   }
@@ -551,35 +534,6 @@ public class ItemsManager implements Listener {
     itemStack.setItemMeta(itemMeta);
     return itemStack;
   }
-  /*
-  @EventHandler
-  public void onPlayerMove(PlayerMoveEvent event) {
-    Player player = event.getPlayer();
-    Location from = event.getFrom();
-    Location to = event.getTo();
-
-    if (from.distance(to) > 0) { // Si el jugador se ha movido
-      float currentExp = player.getExp();
-      float newExp = currentExp + 0.1f; // Incrementamos la experiencia en 0.1
-
-      if (newExp >= 1f) { // Si la experiencia supera 1, el jugador muere
-        player.setHealth(0);
-      } else {
-        player.setExp(newExp); // Actualizamos la barra de experiencia del jugador
-      }
-    } else { // Si el jugador no se ha movido
-      float currentExp = player.getExp();
-      float newExp = currentExp - 0.05f; // Decrementamos la experiencia en 0.05
-
-      if (newExp < 0) { // Si la experiencia es negativa, el jugador muere
-        player.setHealth(0);
-      } else {
-        player.setExp(newExp); // Actualizamos la barra de experiencia del jugador
-      }
-    }
-  }
-
-*/
 
 }
 
