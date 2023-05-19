@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 
 public class SpecialItem {
 
-  private @Getter ItemStack itemStack;
+  final private @Getter ItemStack itemStack;
   final String itemNameColor = "<white><bold> ";
   final String itemLoreColor = "<gray>";
   final MiniMessage mm = DestinyTools.instance().getMm();

@@ -10,12 +10,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.*;
 
 public class ItemBuilder {
-  private Material material;
+  private final Material material;
   private int amount = 1;
-  private Component name;
+  private final Component name;
   private int customModelData = 0;
   private List<Component> lore = new ArrayList<>();
-  private Map<Enchantment, Integer> enchantments = new HashMap<>();
+  private final Map<Enchantment, Integer> enchantments = new HashMap<>();
   private boolean unbreakable = false;
   private ItemFlag[] flags = {};
 

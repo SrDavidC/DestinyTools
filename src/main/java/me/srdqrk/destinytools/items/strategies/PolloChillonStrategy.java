@@ -1,7 +1,6 @@
 package me.srdqrk.destinytools.items.strategies;
 
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
