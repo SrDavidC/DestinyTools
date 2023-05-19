@@ -2,12 +2,11 @@ package me.srdqrk.destinytools.items;
 
 import lombok.Getter;
 import me.srdqrk.destinytools.DestinyTools;
+import me.srdqrk.destinytools.items.strategies.*;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -17,7 +16,6 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -49,91 +47,22 @@ public class ItemsManager implements Listener {
   final int BANANA_CMD = 111;
   final int POLLO_CHILLON_CMD = 112;
   final int KIT_ASTRONAUTA_CMD = 113;
-  final int AGUA_CMD = 114;
-  final int MINA_ELECTRICA_CMD = 999;
-
+  public final int AGUA_CMD = 114;
 
   private final @Getter HashMap<String, SpecialItem> specialItemMap;
-  private MiniMessage mm;
+  private final @Getter HashMap<Integer, IItemStrategy> strategyMap;
+  private final MiniMessage mm;
 
   public ItemsManager() {
     this.specialItemMap = new HashMap<>();
+    this.strategyMap = new HashMap<>();
     this.mm = DestinyTools.instance().getMm();
     DestinyTools.instance().getServer().getPluginManager().registerEvents(this, DestinyTools.instance());
 
-    buildItems();
+    this.initSpecialItemMap();
+    this.initStrategyMap();
   }
 
-  public void buildItems() {
-    this.specialItemMap.put("Cuerda",
-            new SpecialItem(Material.PAPER, "Cuerda", CUERDA_CMD, "Al usar, el jugador es tpeado 8 bloques abajo"));
-
-    this.specialItemMap.put("CanaDePescar",
-            new SpecialItem(Material.FISHING_ROD, "Caña De Pescar", FISHING_ROD_CMD, "Uso limitado de 10"));
-
-    this.specialItemMap.put("LentesTácticos",
-            new SpecialItem(Material.PAPER, "Lentes Tácticos", GAFAS_TACTICOS_CMD, ""));
-
-    this.specialItemMap.put("Rifle",
-            new SpecialItem(Material.CROSSBOW, "Rifle", RIFLE_CMD, "Tiene 32 balas de puro dolor."));
-
-    this.specialItemMap.put("PatoDeHule",
-            new SpecialItem(Material.PAPER, "Pato De Hule", PATO_DE_HULE_CMD, "Si lo colocas en en slot especial, te da 2 corazones extra de vida"));
-
-    this.specialItemMap.put("Sierra",
-            new SpecialItem(Material.PAPER, "Sierra", SIERRA_CMD, "Al golpear un jugador le cortas un pedazo de carne comestible"));
-
-    this.specialItemMap.put("PedazoDeCarne",
-            new SpecialItem(Material.PAPER, "PedazoDeCarne", PEDAZO_DE_CARNE_CMD, "Te rellena dos muslos de comida"));
-
-    this.specialItemMap.put("BotellaDeAcido", new SpecialItem(Material.SPLASH_POTION, "Botella de Acido",
-            BOTELLA_DE_ACIDO_CMD, "Daña a las víctimas", Color.fromRGB(102, 51, 0)));
-
-    this.specialItemMap.put("BotellaDeSulfuro", new SpecialItem(Material.SPLASH_POTION, "Botella de Sulfuro",
-            BOTELLA_DE_SULFURO_CMD, "Al lanzarla, le aplica efecto de hambre, veneno y mareo a la víctima", Color.fromRGB(102, 51, 0)));
-
-    this.specialItemMap.put("MinigunDeJuguete", new SpecialItem(Material.CROSSBOW, "Minigun de Juguete",
-            MINIGUN_DE_JUGUETE_CMD, "Minigun que dispara 100 balas"));
-
-    this.specialItemMap.put("SuplementoAlimenticio", new SpecialItem(Material.PAPER, "Suplemento Alimenticio",
-            SUPLEMENTO_ALIMENTICIO_CMD, "Al darle click secundario (sin abrir inventario) te llena los muslos de hambre"));
-
-    this.specialItemMap.put("Adrenalina", new SpecialItem(Material.PAPER, "Jeringa de Adrenalina",
-            ADRENALINA_CMD, "Al consumirlo te brinda una resistencia mayor al daño"));
-
-    this.specialItemMap.put("Banana", new SpecialItem(Material.PAPER, "Banana",
-            BANANA_CMD, "No tiene ningún uso, pero te la puedes comer y rellenar 4 muslos"));
-
-    this.specialItemMap.put("KitAstronauta", new SpecialItem(Material.PAPER, "Kit de Astronauta",
-            KIT_ASTRONAUTA_CMD, "Si posees el item \"Agua\" te da saturación por 10minutos"));
-
-    this.specialItemMap.put("Agua", new SpecialItem(Material.PAPER, "Agua",
-            AGUA_CMD, "Al consumirlo obtienes 1 muslo de comida, pero si lo juntas con otros objetos, puedes obtener grandes beneficios"));
-
-    this.specialItemMap.put("PolloChillon", new SpecialItem(Material.GOAT_HORN, "Pollo Chillón",
-            POLLO_CHILLON_CMD, "Al usarlo se reproduce un sonido chistoso"));
-
-    this.specialItemMap.put("Planta", new SpecialItem(Material.PAPER, "Planta",
-            PLANTA_CMD, "Al darle click sobre el suelo, se pone la maceta, te brinda bayas cada 5 minutos"));
-    this.specialItemMap.put("Fresa", new SpecialItem(Material.PAPER, "Fresa",
-            FRESA_CMD, ""));
-
-    SpecialItem sierra = this.specialItemMap.get("Sierra");
-    if (sierra != null) {
-      ItemStack sierraIS = sierra.getItemStack();
-      sierraIS = addCustomTag(sierraIS, "usesLeft", 5);
-      this.specialItemMap.put("Sierra", new SpecialItem(sierraIS));
-    }
-    SpecialItem canaDePescar = this.specialItemMap.get("CanaDePescar");
-    if (canaDePescar != null) {
-      ItemStack is = canaDePescar.getItemStack();
-      Damageable damageable = (Damageable) is.getItemMeta();
-      damageable.setDamage(54);
-      is.setItemMeta(damageable);
-      this.specialItemMap.put("CanaDePescar", new SpecialItem(is));
-    }
-
-  }
 
   public ItemStack addCustomTag(ItemStack itemStack, String key, int value) {
     ItemMeta itemMeta = itemStack.getItemMeta();
@@ -142,231 +71,20 @@ public class ItemsManager implements Listener {
     return itemStack;
   }
 
-  private void skillCuerda(Player player) {
-    int CUERDA_Y_TELEPORT = 8;
-    Location location = player.getLocation();
-    int NEW_Y = location.getBlockY() - CUERDA_Y_TELEPORT;
-
-    player.teleport(new Location(location.getWorld(), location.getBlockX(), NEW_Y, location.getBlockZ()));
-
-    ItemStack is = player.getInventory().getItemInMainHand();
-    is.setAmount(is.getAmount() - 1);
-    player.getInventory().setItemInMainHand(is);
-  }
-
-  private void skillGafasTacticas(Player player, ItemStack item) {
-    ItemStack helmet = player.getInventory().getItem(39);
-    player.getInventory().remove(item);
-    if (helmet != null) {
-      player.getInventory().addItem(helmet);
-    }
-    player.getInventory().setItem(39, item);
-    player.playSound(
-            player.getLocation(),
-            Sound.ITEM_ARMOR_EQUIP_ELYTRA, 1F, 1F);
-  }
-
-  private ItemMeta skillRifle(Player player, ItemStack rifle) {
-    ItemMeta meta = rifle.getItemMeta();
-    CrossbowMeta crossbowMeta = (CrossbowMeta) meta;
-    Damageable damageable = (Damageable) meta;
-    final int CROWSSBOW_DURABILITY = 434;
-    if (damageable.getDamage() <= CROWSSBOW_DURABILITY) {
-      crossbowMeta.addChargedProjectile(new ItemStack(Material.ARROW, 1));
-      final int maxTotalUses = 465;
-      final int ourUses = 32;
-      final int uses = maxTotalUses / ourUses;
-      final int damage = damageable.getDamage() + uses;
-      damageable.setDamage(damage);
-    } else {
-      player.playSound(
-              player.getLocation(),
-              Sound.ENTITY_ITEM_BREAK, 1F, 1F);
-      meta = null;
-    }
-    return meta;
-  }
-
-  private ItemMeta skillMinigun(Player player, ItemStack minigun) {
-    ItemMeta meta = minigun.getItemMeta();
-    CrossbowMeta crossbowMeta = (CrossbowMeta) meta;
-    Damageable damageable = (Damageable) meta;
-    final int CROWSSBOW_DURABILITY = 465;
-    if (damageable.getDamage() <= CROWSSBOW_DURABILITY) {
-      crossbowMeta.addChargedProjectile(new ItemStack(Material.ARROW, 1));
-      final int maxTotalUses = 465;
-      final int ourUses = 100;
-      final int uses = maxTotalUses / ourUses;
-      final int damage = damageable.getDamage() + uses;
-      damageable.setDamage(damage);
-    } else {
-      player.playSound(
-              player.getLocation(),
-              Sound.ENTITY_ITEM_BREAK, 1F, 1F);
-      meta = null;
-    }
-    return meta;
-  }
-
-  private void skillBanana(Player player) {
-    if (player != null) {
-      player.setFoodLevel(player.getFoodLevel() + 8);
-      player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1f, 1f);
-      ItemStack is = player.getInventory().getItemInMainHand();
-      is.setAmount(is.getAmount() - 1);
-      player.getInventory().setItemInMainHand(is);
-    }
-  }
-
-  private void skillAgua(Player player) {
-    if (player != null) {
-      player.setFoodLevel(player.getFoodLevel() + 2);
-      player.playSound(player.getLocation(), Sound.ITEM_HONEY_BOTTLE_DRINK, 1f, 0.4f);
-      ItemStack is = player.getInventory().getItemInMainHand();
-      is.setAmount(is.getAmount() - 1);
-      player.getInventory().setItemInMainHand(is);
-    }
-  }
-
-  private void skillKitAstronauta(Player player) {
-    if (player != null) {
-      for (ItemStack item : player.getInventory().getContents()) {
-        if (item != null && item.hasItemMeta()
-                && item.getItemMeta().hasCustomModelData()
-                && item.getItemMeta().getCustomModelData() == AGUA_CMD) {
-          player.getInventory().remove(item);
-          player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 10 * 60 * 20, 0));
-          player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1f, 1f);
-          ItemStack is = player.getInventory().getItemInMainHand();
-          is.setAmount(is.getAmount() - 1);
-          player.getInventory().setItemInMainHand(is);
-          break;
-        }
-      }
-    }
-  }
-
-  private void skillAdrenalina(Player player) {
-    if (player != null) {
-      // 10 * 60 * 20 = 10 minutes on ticks, 1 second equals 20 ticks
-      player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10 * 60 * 20, 1));
-      ItemStack is = player.getInventory().getItemInMainHand();
-      is.setAmount(is.getAmount() - 1);
-      player.getInventory().setItemInMainHand(is);
-    }
-  }
-
-  private void skillPolloChillon(Player player) {
-    if (player != null) {
-      Location location = player.getLocation();
-      String soundName = "mbpstudios:zairdeluque.sfx_alarm"; // TODO: change name
-      float volume = 1.0f;
-      float pitch = 1.0f;
-      location.getWorld().playSound(location, soundName, volume, pitch);
-
-    }
-  }
-
-  private void skillPlanta(Block clickedBlock, BlockFace blockFace, ItemStack item) {
-    if (clickedBlock != null && clickedBlock.getType() != Material.AIR) {
-      Location loc = clickedBlock.getLocation().add(0.5, 1, 0.5);
-      if (loc.getBlock().getType() == Material.AIR) {
-        ItemFrame itemFrame = (ItemFrame) loc.getWorld().spawnEntity(loc, EntityType.ITEM_FRAME);
-        itemFrame.setFacingDirection(blockFace);
-        if (item != null) {
-          itemFrame.setItem(item);
-          item.setAmount(item.getAmount() - 1);
-        }
-        Bukkit.getScheduler().runTaskTimer(DestinyTools.instance(), () -> {
-          if (!itemFrame.getItem().getType().equals(Material.AIR)) {
-            loc.getWorld().dropItemNaturally(loc, this.specialItemMap.get("Fresa").getItemStack());
-          }
-        }, 0, 5 * 60 * 20);
-      }
-    }
-  }
-
-  private void skillMinaElectrica(Block clickedBlock, BlockFace blockFace, ItemStack item) {
-    if (clickedBlock != null  /* && event.getClickedBlock().getType() != Material.AIR */) {
-      Location loc = clickedBlock.getLocation().add(0.5, 1, 0.5);
-      if (loc.getBlock().getType() == Material.AIR) {
-        ItemFrame itemFrame = (ItemFrame) loc.getWorld().spawnEntity(loc, EntityType.ITEM_FRAME);
-        itemFrame.setFacingDirection(blockFace);
-
-        if (item != null) {
-          itemFrame.setItem(item);
-          item.setAmount(item.getAmount() - 1); // discarded
-        }
-      }
-    }
-  }
-
-
   @EventHandler
+  // Strategy pattern applied
   public void onPlayerInteract(PlayerInteractEvent event) {
     if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
       ItemStack item = event.getItem();
-      Player player = event.getPlayer();
       if (item != null && item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
         int model = item.getItemMeta().getCustomModelData();
-        switch (model) {
-          case GAFAS_TACTICOS_CMD: // gafas tácticas
-            skillGafasTacticas(event.getPlayer(), item);
-            break;
-          case CUERDA_CMD: // cuerda
-            skillCuerda(event.getPlayer());
-            break;
-          case RIFLE_CMD: // Rifle
-            if (item.getType() == Material.CROSSBOW) {
-              ItemMeta meta = skillRifle(player, item);
-              if (meta != null) {
-                item.setItemMeta(meta);
-              } else {
-                event.setCancelled(true);
-              }
-            }
-            break;
-          case MINIGUN_DE_JUGUETE_CMD:
-            ItemMeta meta = skillMinigun(player, item);
-            if (meta != null) {
-              item.setItemMeta(meta);
-            } else {
-              event.setCancelled(true);
-            }
-            break;
-          case SUPLEMENTO_ALIMENTICIO_CMD:
-            player.setFoodLevel(20);
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1f, 1f);
-            item.setAmount(item.getAmount() - 1);
-            break;
-          case ADRENALINA_CMD:
-            skillAdrenalina(player);
-            break;
-          case BANANA_CMD:
-            skillBanana(player);
-            break;
-          case AGUA_CMD:
-            skillAgua(player);
-            break;
-          case KIT_ASTRONAUTA_CMD:
-            skillKitAstronauta(player);
-            break;
-          case POLLO_CHILLON_CMD:
-            event.setCancelled(true);
-            skillPolloChillon(player);
-            break;
-          case MINA_ELECTRICA_CMD:
-            skillMinaElectrica(event.getClickedBlock(), event.getBlockFace(), item);
-            break;
-          case PLANTA_CMD:
-            skillPlanta(event.getClickedBlock(), event.getBlockFace(), item);
-            break;
-        } // END SWITCH
+        IItemStrategy strategy = strategyMap.get(model);
+        if (strategy != null) {
+          strategy.execute(event, item);
+        }
       }
     }
   }
-
-
   @EventHandler
   public void onShootCrossBowEvent(EntityShootBowEvent e) {
     ItemStack item = e.getBow();
@@ -533,6 +251,93 @@ public class ItemsManager implements Listener {
     itemMeta.getPersistentDataContainer().set(new NamespacedKey(DestinyTools.instance(), "usesLeft"), PersistentDataType.INTEGER, usesLeft);
     itemStack.setItemMeta(itemMeta);
     return itemStack;
+  }
+
+  private void initStrategyMap() {
+    strategyMap.put(GAFAS_TACTICOS_CMD, new GafasTacticasStrategy());
+    strategyMap.put(CUERDA_CMD, new CuerdaStrategy());
+    strategyMap.put(BANANA_CMD, new BananaStrategy());
+    strategyMap.put(RIFLE_CMD, new RifleStrategy());
+    strategyMap.put(POLLO_CHILLON_CMD, new PolloChillonStrategy());
+    strategyMap.put(MINIGUN_DE_JUGUETE_CMD, new MinigunStrategy());
+    strategyMap.put(AGUA_CMD, new AguaStrategy());
+    strategyMap.put(KIT_ASTRONAUTA_CMD, new KitAstronautaStrategy());
+    strategyMap.put(ADRENALINA_CMD, new AdrenalinaStrategy());
+    strategyMap.put(PLANTA_CMD, new PlantaStrategy());
+    strategyMap.put(SUPLEMENTO_ALIMENTICIO_CMD, new SuplementoAlimenticioStrategy());
+    strategyMap.put(FRESA_CMD, new FresaStrategy());
+    strategyMap.put(PEDAZO_DE_CARNE_CMD, new PedazoDeCarneStrategy());
+  }
+
+  private void initSpecialItemMap() {
+    this.specialItemMap.put("Cuerda",
+            new SpecialItem(Material.PAPER, "Cuerda", CUERDA_CMD, "Al usar, el jugador es tpeado 8 bloques abajo"));
+
+    this.specialItemMap.put("CanaDePescar",
+            new SpecialItem(Material.FISHING_ROD, "Caña De Pescar", FISHING_ROD_CMD, "Uso limitado de 10"));
+
+    this.specialItemMap.put("LentesTácticos",
+            new SpecialItem(Material.PAPER, "Lentes Tácticos", GAFAS_TACTICOS_CMD, ""));
+
+    this.specialItemMap.put("Rifle",
+            new SpecialItem(Material.CROSSBOW, "Rifle", RIFLE_CMD, "Tiene 32 balas de puro dolor."));
+
+    this.specialItemMap.put("PatoDeHule",
+            new SpecialItem(Material.PAPER, "Pato De Hule", PATO_DE_HULE_CMD, "Si lo colocas en en slot especial, te da 2 corazones extra de vida"));
+
+    this.specialItemMap.put("Sierra",
+            new SpecialItem(Material.PAPER, "Sierra", SIERRA_CMD, "Al golpear un jugador le cortas un pedazo de carne comestible"));
+
+    this.specialItemMap.put("PedazoDeCarne",
+            new SpecialItem(Material.PAPER, "PedazoDeCarne", PEDAZO_DE_CARNE_CMD, "Te rellena dos muslos de comida"));
+
+    this.specialItemMap.put("BotellaDeAcido", new SpecialItem(Material.SPLASH_POTION, "Botella de Acido",
+            BOTELLA_DE_ACIDO_CMD, "Daña a las víctimas", Color.fromRGB(102, 51, 0)));
+
+    this.specialItemMap.put("BotellaDeSulfuro", new SpecialItem(Material.SPLASH_POTION, "Botella de Sulfuro",
+            BOTELLA_DE_SULFURO_CMD, "Al lanzarla, le aplica efecto de hambre, veneno y mareo a la víctima", Color.fromRGB(102, 51, 0)));
+
+    this.specialItemMap.put("MinigunDeJuguete", new SpecialItem(Material.CROSSBOW, "Minigun de Juguete",
+            MINIGUN_DE_JUGUETE_CMD, "Minigun que dispara 100 balas"));
+
+    this.specialItemMap.put("SuplementoAlimenticio", new SpecialItem(Material.PAPER, "Suplemento Alimenticio",
+            SUPLEMENTO_ALIMENTICIO_CMD, "Al darle click secundario (sin abrir inventario) te llena los muslos de hambre"));
+
+    this.specialItemMap.put("Adrenalina", new SpecialItem(Material.PAPER, "Jeringa de Adrenalina",
+            ADRENALINA_CMD, "Al consumirlo te brinda una resistencia mayor al daño"));
+
+    this.specialItemMap.put("Banana", new SpecialItem(Material.PAPER, "Banana",
+            BANANA_CMD, "No tiene ningún uso, pero te la puedes comer y rellenar 4 muslos"));
+
+    this.specialItemMap.put("KitAstronauta", new SpecialItem(Material.PAPER, "Kit de Astronauta",
+            KIT_ASTRONAUTA_CMD, "Si posees el item \"Agua\" te da saturación por 10minutos"));
+
+    this.specialItemMap.put("Agua", new SpecialItem(Material.PAPER, "Agua",
+            AGUA_CMD, "Al consumirlo obtienes 1 muslo de comida, pero si lo juntas con otros objetos, puedes obtener grandes beneficios"));
+
+    this.specialItemMap.put("PolloChillon", new SpecialItem(Material.GOAT_HORN, "Pollo Chillón",
+            POLLO_CHILLON_CMD, "Al usarlo se reproduce un sonido chistoso"));
+
+    this.specialItemMap.put("Planta", new SpecialItem(Material.PAPER, "Planta",
+            PLANTA_CMD, "Al darle click sobre el suelo, se pone la maceta, te brinda bayas cada 5 minutos"));
+    this.specialItemMap.put("Fresa", new SpecialItem(Material.PAPER, "Fresa",
+            FRESA_CMD, ""));
+
+    SpecialItem sierra = this.specialItemMap.get("Sierra");
+    if (sierra != null) {
+      ItemStack sierraIS = sierra.getItemStack();
+      sierraIS = addCustomTag(sierraIS, "usesLeft", 5);
+      this.specialItemMap.put("Sierra", new SpecialItem(sierraIS));
+    }
+    SpecialItem canaDePescar = this.specialItemMap.get("CanaDePescar");
+    if (canaDePescar != null) {
+      ItemStack is = canaDePescar.getItemStack();
+      Damageable damageable = (Damageable) is.getItemMeta();
+      damageable.setDamage(54);
+      is.setItemMeta(damageable);
+      this.specialItemMap.put("CanaDePescar", new SpecialItem(is));
+    }
+
   }
 
 }

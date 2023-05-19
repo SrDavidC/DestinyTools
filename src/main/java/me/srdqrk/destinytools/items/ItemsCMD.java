@@ -1,10 +1,7 @@
 package me.srdqrk.destinytools.items;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import me.srdqrk.destinytools.DestinyTools;
 import org.bukkit.Sound;
@@ -28,11 +25,13 @@ public class ItemsCMD extends BaseCommand {
   @Subcommand("get")
   @CommandCompletion("@items")
   @CommandPermission("destinytools.executer")
-  public void onGetItem(Player sender, String itemName) {
+  public void onGetItem(Player sender, String itemName, @Default("1") int count) {
     SpecialItem specialItem = DestinyTools.instance().getItemsManager().getSpecialItemMap().get(itemName);
     String message;
     if (specialItem != null) {
-      sender.getInventory().addItem(specialItem.getItemStack());
+      for (int counter = 0; counter < count; counter++) {
+        sender.getInventory().addItem(specialItem.getItemStack());
+      }
       message = "El item ha sido anadido a tu inventario.";
       sender.sendMessage(DestinyTools.instance().getMm().deserialize("<green>" + message));
     } else {
