@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,12 +38,13 @@ public class ItemsCMD extends BaseCommand {
       message = "El item ha sido anadido a tu inventario.";
       sender.sendMessage(DestinyTools.instance().getMm().deserialize("<green>" + message));
     } else {
-      message = "El item " + itemName +" no fue encontrado";
+      message = "El item " + itemName + " no fue encontrado";
       message += "\nCantidad de items actuales: " + DestinyTools.instance().getItemsManager().getSpecialItemMap().size();
       sender.sendMessage(DestinyTools.instance().getMm().deserialize("<red>" + message));
     }
 
   }
+
   @Subcommand("getall")
   @CommandPermission("destinytools.executer")
   public void onGetAllItems(Player sender) {
@@ -53,6 +55,7 @@ public class ItemsCMD extends BaseCommand {
     sender.sendMessage(DestinyTools.instance().getMm().deserialize("<green>" + "Te hemos dado todos los items especiales existentes"));
 
   }
+
   @Subcommand("give")
   @CommandCompletion("@players @items")
   @CommandPermission("destinytools.executer")
@@ -69,15 +72,37 @@ public class ItemsCMD extends BaseCommand {
       sender.sendMessage(DestinyTools.instance().getMm().deserialize("<red>" + message));
     }
   }
+
   @CommandAlias("muslitos")
   @CommandPermission("destinytools.executer")
   @CommandCompletion("@range:1-20 @players")
-  public void onHunger(CommandSender sender, int quantity, OnlinePlayer player) {
-    if (player.getPlayer() != null) {
-      player.getPlayer().setFoodLevel(quantity);
-      sender.sendMessage(ChatColor.GREEN + "Successfully");
+  public void onHunger(CommandSender sender, String quantity, String player) {
+    if (quantity.equalsIgnoreCase("all")) {
+      if (player.equalsIgnoreCase("all")) {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+          onlinePlayer.setFoodLevel(20);
+        }
+        sender.sendMessage(ChatColor.GREEN + "Muslitos rellenos para todos los jugadores");
+      } else {
+        Player onlinePlayer = Bukkit.getPlayer(player);
+        onlinePlayer.setFoodLevel(20);
+        sender.sendMessage(ChatColor.GREEN + "Muslitos rellenos para " + player);
+      }
+    } else {
+      int foodLevel = Integer.parseInt(quantity);
+      if (player.equalsIgnoreCase("all")) {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+          onlinePlayer.setFoodLevel(foodLevel);
+        }
+        sender.sendMessage(ChatColor.GREEN + "Muslitos rellenos con nivel " + foodLevel + " para todos los jugadores");
+      } else {
+        Player onlinePlayer = Bukkit.getPlayer(player);
+        onlinePlayer.setFoodLevel(foodLevel);
+        sender.sendMessage(ChatColor.GREEN + "Muslitos rellenos con nivel " + foodLevel + " para " + player);
+      }
     }
   }
+
   @Subcommand("giveRandom")
   @CommandCompletion("@players")
   @CommandPermission("destinytools.executer")
