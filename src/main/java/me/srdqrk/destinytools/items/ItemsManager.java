@@ -16,7 +16,6 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,9 +29,10 @@ import java.util.Objects;
 
 public class ItemsManager implements Listener {
 
-  final int FISHING_ROD_CMD = 1;
   final int RIFLE_CMD = 1;
   final int MINIGUN_DE_JUGUETE_CMD = 2;
+
+  final int FISHING_ROD_CMD = 3;
   final int PEDAZO_DE_CARNE_CMD = 99;
   final int GAFAS_TACTICOS_CMD = 101;
   final int SIERRA_CMD = 102;
@@ -87,6 +87,7 @@ public class ItemsManager implements Listener {
     strategyMap.put(PEDAZO_DE_CARNE_CMD, new PedazoDeCarneStrategy());
     strategyMap.put(BOTELLA_DE_ACIDO_CMD, new BotellaDeAcidoStrategy());
     strategyMap.put(BOTELLA_DE_SULFURO_CMD, new BotellaDeSulfuroStrategy());
+    strategyMap.put(FISHING_ROD_CMD, new CanaDePescarStrategy());
   }
   @EventHandler
   // Strategy pattern applied
@@ -243,8 +244,7 @@ public class ItemsManager implements Listener {
 
   @EventHandler
   public void onArrowHit(ProjectileHitEvent event) {
-    if (event.getEntity() instanceof Arrow) {
-      Arrow arrow = (Arrow) event.getEntity();
+    if (event.getEntity() instanceof Arrow arrow) {
       if (arrow.customName() != null && arrow.customName().equals("RifleAMMO")) {
         if (event.getHitEntity() == null) {
           arrow.remove();
@@ -254,7 +254,7 @@ public class ItemsManager implements Listener {
   }
 
 
-  public int getUsesLeft(ItemStack itemStack) {
+  public static int getUsesLeft(ItemStack itemStack) {
     ItemMeta itemMeta = itemStack.getItemMeta();
     Integer usesLeft = itemMeta.getPersistentDataContainer().get(new NamespacedKey(DestinyTools.instance(), "usesLeft"), PersistentDataType.INTEGER);
     if (usesLeft == null) {
@@ -264,7 +264,7 @@ public class ItemsManager implements Listener {
     }
   }
 
-  public ItemStack setUsesLeft(ItemStack itemStack, int usesLeft) {
+  public static ItemStack setUsesLeft(ItemStack itemStack, int usesLeft) {
     ItemMeta itemMeta = itemStack.getItemMeta();
     itemMeta.getPersistentDataContainer().set(new NamespacedKey(DestinyTools.instance(), "usesLeft"), PersistentDataType.INTEGER, usesLeft);
     itemStack.setItemMeta(itemMeta);
@@ -302,7 +302,7 @@ public class ItemsManager implements Listener {
             BOTELLA_DE_SULFURO_CMD, "Al lanzarla, le aplica efecto de hambre, veneno y mareo a la víctima"));
 
     this.specialItemMap.put("MinigunDeJuguete", new SpecialItem(Material.CROSSBOW, "Minigun de Juguete",
-            MINIGUN_DE_JUGUETE_CMD, "Minigun que dispara 100 balas"));
+            MINIGUN_DE_JUGUETE_CMD, "Minigun que dispara 80 balas"));
 
     this.specialItemMap.put("SuplementoAlimenticio", new SpecialItem(Material.PAPER, "Suplemento Alimenticio",
             SUPLEMENTO_ALIMENTICIO_CMD, "Al darle click secundario (sin abrir inventario) te llena los muslos de hambre"));
@@ -336,12 +336,23 @@ public class ItemsManager implements Listener {
     SpecialItem canaDePescar = this.specialItemMap.get("CanaDePescar");
     if (canaDePescar != null) {
       ItemStack is = canaDePescar.getItemStack();
-      Damageable damageable = (Damageable) is.getItemMeta();
-      damageable.setDamage(54);
-      is.setItemMeta(damageable);
+      is = addCustomTag(is,"usesLeft", 20);
       this.specialItemMap.put("CanaDePescar", new SpecialItem(is));
     }
 
+  }
+  @EventHandler
+  public void onSnowballHit(final ProjectileHitEvent e) {
+    if (e.getEntity().getType() != EntityType.SNOWBALL) {
+      return;
+    }
+    double snowballDamage = 0.1;
+    final Entity hitEntity = e.getHitEntity();
+    if (hitEntity != null) {
+      if (hitEntity instanceof Damageable) {
+        ((Damageable)hitEntity).damage(snowballDamage);
+      }
+    }
   }
 
 }
