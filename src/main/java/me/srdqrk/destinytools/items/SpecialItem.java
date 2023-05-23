@@ -2,7 +2,11 @@ package me.srdqrk.destinytools.items;
 
 import lombok.Getter;
 import me.srdqrk.destinytools.DestinyTools;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +22,7 @@ public class SpecialItem {
 
   public SpecialItem(Material material, String itemName, int customModelData, String lore) {
     this.itemStack = new ItemBuilder(material, mm.deserialize(
-            itemNameColor + itemName))
+            itemNameColor + itemName).decoration(TextDecoration.ITALIC, false))
             .customModelData(customModelData)
             .lore(mm.deserialize(itemLoreColor + lore))
             .build();
