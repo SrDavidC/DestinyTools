@@ -4,14 +4,16 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import me.srdqrk.destinytools.DestinyTools;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
-@CommandAlias("DestinyTools|dt|item|items")
+@CommandAlias("DestinyTools|dt|item|items|i")
 @CommandPermission("destinytools.executer")
 public class ItemsCMD extends BaseCommand {
 
@@ -67,12 +69,30 @@ public class ItemsCMD extends BaseCommand {
       sender.sendMessage(DestinyTools.instance().getMm().deserialize("<red>" + message));
     }
   }
-  @CommandAlias("hunger")
+  @CommandAlias("muslitos")
   @CommandPermission("destinytools.executer")
-  public void onHunger(CommandSender sender) {
-    if (sender instanceof Player player) {
-      player.setFoodLevel(player.getFoodLevel() - 10);
-      player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BREATH, 1F ,1F);
+  @CommandCompletion("@range:1-20 @players")
+  public void onHunger(CommandSender sender, int quantity, OnlinePlayer player) {
+    if (player.getPlayer() != null) {
+      player.getPlayer().setFoodLevel(quantity);
+      sender.sendMessage(ChatColor.GREEN + "Successfully");
+    }
+  }
+  @Subcommand("giveRandom")
+  @CommandCompletion("@players")
+  @CommandPermission("destinytools.executer")
+  public void onGiveItem(CommandSender sender, OnlinePlayer player) {
+    HashMap<String, SpecialItem> map = DestinyTools.instance().getItemsManager().getSpecialItemMap();
+    SpecialItem specialItem = new ArrayList<>(map.values()).get(new Random().nextInt(map.size()));
+    String message;
+    if (specialItem != null) {
+      player.getPlayer().getInventory().addItem(specialItem.getItemStack());
+      message = "El item ha sido anadido a tu inventario.";
+      sender.sendMessage(DestinyTools.instance().getMm().deserialize("<green>" + message));
+    } else {
+      message = "El item no fue encontrado";
+      message += "\nCantidad de items actuales: " + DestinyTools.instance().getItemsManager().getSpecialItemMap().size();
+      sender.sendMessage(DestinyTools.instance().getMm().deserialize("<red>" + message));
     }
   }
 }
