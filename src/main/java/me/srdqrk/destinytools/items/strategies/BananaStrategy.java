@@ -11,9 +11,6 @@ public class BananaStrategy implements IItemStrategy {
     Player player = event.getPlayer();
     player.setFoodLevel(player.getFoodLevel() + 8);
     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1f, 1f);
-    ItemStack is = player.getInventory().getItemInMainHand();
-    is.setAmount(is.getAmount() - 1);
-    player.getInventory().setItemInMainHand(is);
 
     this.reduceItemAmount(item, player);
   }

@@ -71,6 +71,23 @@ public class ItemsManager implements Listener {
     return itemStack;
   }
 
+  private void initStrategyMap() {
+    strategyMap.put(GAFAS_TACTICOS_CMD, new GafasTacticasStrategy());
+    strategyMap.put(CUERDA_CMD, new CuerdaStrategy());
+    strategyMap.put(BANANA_CMD, new BananaStrategy());
+    strategyMap.put(RIFLE_CMD, new RifleStrategy());
+    strategyMap.put(POLLO_CHILLON_CMD, new PolloChillonStrategy());
+    strategyMap.put(MINIGUN_DE_JUGUETE_CMD, new MinigunStrategy());
+    strategyMap.put(AGUA_CMD, new AguaStrategy());
+    strategyMap.put(KIT_ASTRONAUTA_CMD, new KitAstronautaStrategy());
+    strategyMap.put(ADRENALINA_CMD, new AdrenalinaStrategy());
+    strategyMap.put(PLANTA_CMD, new PlantaStrategy());
+    strategyMap.put(SUPLEMENTO_ALIMENTICIO_CMD, new SuplementoAlimenticioStrategy());
+    strategyMap.put(FRESA_CMD, new FresaStrategy());
+    strategyMap.put(PEDAZO_DE_CARNE_CMD, new PedazoDeCarneStrategy());
+    strategyMap.put(BOTELLA_DE_ACIDO_CMD, new BotellaDeAcidoStrategy());
+    strategyMap.put(BOTELLA_DE_SULFURO_CMD, new BotellaDeSulfuroStrategy());
+  }
   @EventHandler
   // Strategy pattern applied
   public void onPlayerInteract(PlayerInteractEvent event) {
@@ -121,7 +138,7 @@ public class ItemsManager implements Listener {
       }
     } else if ((event.getEntity() instanceof Player || event.getEntity() instanceof Cow) && event.getDamager() instanceof Snowball snowball) {
       if (snowball.customName().equals("MinigunAMMO")) {
-        double damage = 0.01;
+        double damage = 0.1;
         event.setDamage(damage);
       }
     }
@@ -152,6 +169,7 @@ public class ItemsManager implements Listener {
     }
   }
 
+  // TODO: may could be a good idea  refatc this strategy pattern, like attack_strategy
   @EventHandler
   public void onPlayerAttackAnotherOne(EntityDamageByEntityEvent e) {
     if ((e.getDamager() instanceof Player damager) && ((e.getEntity() instanceof Player) || (e.getEntity() instanceof Cow))) {
@@ -253,21 +271,7 @@ public class ItemsManager implements Listener {
     return itemStack;
   }
 
-  private void initStrategyMap() {
-    strategyMap.put(GAFAS_TACTICOS_CMD, new GafasTacticasStrategy());
-    strategyMap.put(CUERDA_CMD, new CuerdaStrategy());
-    strategyMap.put(BANANA_CMD, new BananaStrategy());
-    strategyMap.put(RIFLE_CMD, new RifleStrategy());
-    strategyMap.put(POLLO_CHILLON_CMD, new PolloChillonStrategy());
-    strategyMap.put(MINIGUN_DE_JUGUETE_CMD, new MinigunStrategy());
-    strategyMap.put(AGUA_CMD, new AguaStrategy());
-    strategyMap.put(KIT_ASTRONAUTA_CMD, new KitAstronautaStrategy());
-    strategyMap.put(ADRENALINA_CMD, new AdrenalinaStrategy());
-    strategyMap.put(PLANTA_CMD, new PlantaStrategy());
-    strategyMap.put(SUPLEMENTO_ALIMENTICIO_CMD, new SuplementoAlimenticioStrategy());
-    strategyMap.put(FRESA_CMD, new FresaStrategy());
-    strategyMap.put(PEDAZO_DE_CARNE_CMD, new PedazoDeCarneStrategy());
-  }
+
 
   private void initSpecialItemMap() {
     this.specialItemMap.put("Cuerda",
@@ -291,11 +295,11 @@ public class ItemsManager implements Listener {
     this.specialItemMap.put("PedazoDeCarne",
             new SpecialItem(Material.PAPER, "PedazoDeCarne", PEDAZO_DE_CARNE_CMD, "Te rellena dos muslos de comida"));
 
-    this.specialItemMap.put("BotellaDeAcido", new SpecialItem(Material.SPLASH_POTION, "Botella de Acido",
-            BOTELLA_DE_ACIDO_CMD, "Daña a las víctimas", Color.fromRGB(102, 51, 0)));
+    this.specialItemMap.put("BotellaDeAcido", new SpecialItem(Material.PAPER, "Botella de Acido",
+            BOTELLA_DE_ACIDO_CMD, "Daña a las víctimas"));
 
-    this.specialItemMap.put("BotellaDeSulfuro", new SpecialItem(Material.SPLASH_POTION, "Botella de Sulfuro",
-            BOTELLA_DE_SULFURO_CMD, "Al lanzarla, le aplica efecto de hambre, veneno y mareo a la víctima", Color.fromRGB(102, 51, 0)));
+    this.specialItemMap.put("BotellaDeSulfuro", new SpecialItem(Material.PAPER, "Botella de Sulfuro",
+            BOTELLA_DE_SULFURO_CMD, "Al lanzarla, le aplica efecto de hambre, veneno y mareo a la víctima"));
 
     this.specialItemMap.put("MinigunDeJuguete", new SpecialItem(Material.CROSSBOW, "Minigun de Juguete",
             MINIGUN_DE_JUGUETE_CMD, "Minigun que dispara 100 balas"));
