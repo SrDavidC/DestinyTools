@@ -3,6 +3,8 @@ package me.srdqrk.destinytools.items;
 import lombok.Getter;
 import me.srdqrk.destinytools.DestinyTools;
 import me.srdqrk.destinytools.items.strategies.*;
+import me.srdqrk.destinytools.items.strategies.objects.IItemStrategy;
+import me.srdqrk.destinytools.items.strategies.objects.IProjectileStrategy;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 
@@ -29,38 +31,40 @@ import java.util.Objects;
 
 public class ItemsManager implements Listener {
 
-  final int RIFLE_CMD = 1;
-  final int MINIGUN_DE_JUGUETE_CMD = 2;
+  public final int RIFLE_CMD = 1;
+  public final int MINIGUN_DE_JUGUETE_CMD = 2;
 
-  final int FISHING_ROD_CMD = 3;
-  final int PEDAZO_DE_CARNE_CMD = 99;
-  final int GAFAS_TACTICOS_CMD = 101;
-  final int SIERRA_CMD = 102;
-  final int PATO_DE_HULE_CMD = 103;
-  final int CUERDA_CMD = 104;
-  final int BOTELLA_DE_ACIDO_CMD = 105;
-  final int BOTELLA_DE_SULFURO_CMD = 106;
-  final int PLANTA_CMD = 107;
-  final int FRESA_CMD = 108;
-  final int SUPLEMENTO_ALIMENTICIO_CMD = 109;
-  final int ADRENALINA_CMD = 110;
-  final int BANANA_CMD = 111;
-  final int POLLO_CHILLON_CMD = 112;
-  final int KIT_ASTRONAUTA_CMD = 113;
+  public final int FISHING_ROD_CMD = 3;
+  public final int PEDAZO_DE_CARNE_CMD = 99;
+  public final int GAFAS_TACTICOS_CMD = 101;
+  public final int SIERRA_CMD = 102;
+  public final int PATO_DE_HULE_CMD = 103;
+  public final int CUERDA_CMD = 104;
+  public final int BOTELLA_DE_ACIDO_CMD = 105;
+  public final int BOTELLA_DE_SULFURO_CMD = 106;
+  public final int PLANTA_CMD = 107;
+  public final int FRESA_CMD = 108;
+  public final int SUPLEMENTO_ALIMENTICIO_CMD = 109;
+  public final int ADRENALINA_CMD = 110;
+  public final int BANANA_CMD = 111;
+  public final int POLLO_CHILLON_CMD = 112;
+  public final int KIT_ASTRONAUTA_CMD = 113;
   public final int AGUA_CMD = 114;
-
   private final @Getter HashMap<String, SpecialItem> specialItemMap;
   private final @Getter HashMap<Integer, IItemStrategy> strategyMap;
+  private final @Getter HashMap<Integer, IProjectileStrategy> projectileStrategyMap;
   private final MiniMessage mm;
 
   public ItemsManager() {
     this.specialItemMap = new HashMap<>();
     this.strategyMap = new HashMap<>();
+    this.projectileStrategyMap = new HashMap<>();
     this.mm = DestinyTools.instance().getMm();
     DestinyTools.instance().getServer().getPluginManager().registerEvents(this, DestinyTools.instance());
 
     this.initSpecialItemMap();
     this.initStrategyMap();
+    this.initProjectileStrategyMap();
   }
 
 
@@ -89,8 +93,12 @@ public class ItemsManager implements Listener {
     strategyMap.put(BOTELLA_DE_SULFURO_CMD, new BotellaDeSulfuroStrategy());
     strategyMap.put(FISHING_ROD_CMD, new CanaDePescarStrategy());
   }
-  @EventHandler
+  private void initProjectileStrategyMap() {
+    projectileStrategyMap.put(BOTELLA_DE_SULFURO_CMD, new SulfuroPotion());
+  }
+
   // Strategy pattern applied
+  @EventHandler
   public void onPlayerInteract(PlayerInteractEvent event) {
     if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
       ItemStack item = event.getItem();
@@ -103,6 +111,34 @@ public class ItemsManager implements Listener {
       }
     }
   }
+
+  @EventHandler
+  public void onProjectileHitPlayer(ProjectileHitEvent event) {
+    Projectile projectileEntity = event.getEntity();
+    int defaultModel = -1000;
+    int model = defaultModel;
+    ItemStack item = null;
+    if (projectileEntity instanceof Arrow projectile) {
+      item = projectile.getItemStack();
+      if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
+        model = item.getItemMeta().getCustomModelData();
+      }
+
+    } else if (projectileEntity instanceof ThrownPotion projectile) {
+      item = projectile.getItem();
+      if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
+        model = item.getItemMeta().getCustomModelData();
+      }
+    }
+    if (model != defaultModel) {
+      IProjectileStrategy strategy = projectileStrategyMap.get(model);
+      if (strategy != null) {
+        strategy.execute(event, item);
+      }
+    }
+
+  }
+
   @EventHandler
   public void onShootCrossBowEvent(EntityShootBowEvent e) {
     ItemStack item = e.getBow();
@@ -219,21 +255,16 @@ public class ItemsManager implements Listener {
     }
     int customModelData = meta.getCustomModelData();
     switch (customModelData) {
-      case BOTELLA_DE_ACIDO_CMD:
+      case BOTELLA_DE_SULFURO_CMD:
         Entity hitEntity = e.getHitEntity();
         if (hitEntity != null) {
           if (hitEntity instanceof Player player) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 2 * 20, 0));
-          }
-        }
-        break;
-      case BOTELLA_DE_SULFURO_CMD:
-        hitEntity = e.getHitEntity();
-        if (hitEntity != null) {
-          if (hitEntity instanceof LivingEntity livingEntity) {
-            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 10 * 20, 0));
-            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 10 * 20, 0));
-            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 10 * 20, 0));
+            if(!(player.getName().equals(((Player)e.getEntity().getShooter()).getName()))) {
+              for (PotionEffect effect:  meta.getCustomEffects()) {
+                player.removePotionEffect(effect.getType());
+              }
+              // e.setCancelled(true);
+            }
           }
         }
         break;

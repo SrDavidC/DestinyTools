@@ -2,11 +2,9 @@ package me.srdqrk.destinytools.items.strategies.objects;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.srdqrk.destinytools.items.strategies.IItemStrategy;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.CrossbowMeta;

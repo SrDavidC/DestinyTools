@@ -1,5 +1,6 @@
 package me.srdqrk.destinytools.items.strategies;
 
+import me.srdqrk.destinytools.items.strategies.objects.IItemStrategy;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.Player;

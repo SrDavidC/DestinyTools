@@ -1,6 +1,7 @@
 package me.srdqrk.destinytools.items.strategies;
 
 import me.srdqrk.destinytools.DestinyTools;
+import me.srdqrk.destinytools.items.strategies.objects.IItemStrategy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

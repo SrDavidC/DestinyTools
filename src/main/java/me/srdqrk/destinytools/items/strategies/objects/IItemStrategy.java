@@ -1,4 +1,4 @@
-package me.srdqrk.destinytools.items.strategies;
+package me.srdqrk.destinytools.items.strategies.objects;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
