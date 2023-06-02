@@ -15,6 +15,8 @@ import org.bukkit.Color;
 public class BotellaDeAcidoStrategy implements IItemStrategy {
   @Override
   public void execute(PlayerInteractEvent event, ItemStack item) {
+
+
     ItemStack potion = new ItemStack(Material.LINGERING_POTION);
     PotionMeta meta = (PotionMeta) potion.getItemMeta();
     meta.addCustomEffect(new PotionEffect(PotionEffectType.WITHER,8 * 20, 0),true);

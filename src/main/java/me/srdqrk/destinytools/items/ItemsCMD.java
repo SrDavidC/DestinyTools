@@ -16,12 +16,14 @@ import java.util.Random;
 @CommandAlias("DestinyTools|dt|item|items|i")
 @CommandPermission("destinytools.executer")
 public class ItemsCMD extends BaseCommand {
+  ItemsManager itemsManager;
 
   public ItemsCMD() {
     // Register Completetion for registered items on ItemManager
     DestinyTools.instance().getPaperCommandManager().getCommandCompletions().registerStaticCompletion(
             "items", new ArrayList<>(DestinyTools.instance().getItemsManager().getSpecialItemMap()
                     .keySet()));
+    this.itemsManager = DestinyTools.instance().getItemsManager();
   }
 
   @Subcommand("get")
@@ -119,4 +121,11 @@ public class ItemsCMD extends BaseCommand {
       sender.sendMessage(DestinyTools.instance().getMm().deserialize("<red>" + message));
     }
   }
+  @Subcommand("disable")
+  @CommandCompletion("@boolean")
+  @CommandPermission("destinytools.executer")
+  public void onDisable(CommandSender sender, boolean bool) {
+    this.itemsManager.setDisabled(bool);
+  }
+
 }

@@ -11,7 +11,7 @@ public class PolloChillonStrategy implements IItemStrategy {
   public void execute(PlayerInteractEvent event, ItemStack item) {
     Player player = event.getPlayer();
     Location location = player.getLocation();
-    String soundName = "mbpstudios:zairdeluque.sfx_alarm"; // TODO: change name
+    String soundName = "mbpstudios:zairdeluque.pollo";
     float volume = 1.0f;
     float pitch = 1.0f;
     location.getWorld().playSound(location, soundName, volume, pitch);

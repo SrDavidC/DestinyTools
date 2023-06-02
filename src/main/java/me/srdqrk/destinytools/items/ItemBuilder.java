@@ -37,8 +37,8 @@ public class ItemBuilder {
     return this;
   }
 
-  public ItemBuilder lore(Component... lore) {
-    this.lore = Arrays.stream(lore).toList();
+  public ItemBuilder lore(List<Component> lore) {
+    this.lore = lore;
     return this;
   }
 

@@ -12,33 +12,30 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class SpecialItem {
 
   final private @Getter ItemStack itemStack;
-  final String itemNameColor = "<white><bold> ";
+  final String itemNameColor = "<white><bold>   ";
   final String itemLoreColor = "<gray>";
   final MiniMessage mm = DestinyTools.instance().getMm();
 
-  public SpecialItem(Material material, String itemName, int customModelData, String lore) {
+  public SpecialItem(Material material, String itemName, int customModelData, String... lore) {
+    List<Component> componentsLore = new ArrayList<>();
+    for (String line : lore) {
+      componentsLore.add(mm.deserialize(itemLoreColor + line).decoration(TextDecoration.ITALIC, false));
+    }
+
     this.itemStack = new ItemBuilder(material, mm.deserialize(
             itemNameColor + itemName).decoration(TextDecoration.ITALIC, false))
             .customModelData(customModelData)
-            .lore(mm.deserialize(itemLoreColor + lore))
+            .lore(componentsLore)
             .build();
   }
-  public SpecialItem(Material material, String itemName, int customModelData, String lore, Color color) {
-    this.itemStack = new ItemBuilder(material, mm.deserialize(
-            itemNameColor + itemName))
-            .customModelData(customModelData)
-            .lore(mm.deserialize(itemLoreColor + lore))
-            .build();
-    PotionMeta meta = (PotionMeta) this.itemStack.getItemMeta();
-    meta.setColor(color);
-    meta.setCustomModelData(customModelData);
 
-    this.itemStack.setItemMeta(meta);
-  }
   public SpecialItem(ItemStack itemStack) {
     this.itemStack = itemStack;
   }

@@ -3,11 +3,13 @@ package me.srdqrk.destinytools;
 import co.aikar.commands.PaperCommandManager;
 import fr.mrmicky.fastinv.FastInvManager;
 import lombok.Getter;
+import lombok.Setter;
 import me.srdqrk.destinytools.items.ItemsCMD;
 import me.srdqrk.destinytools.items.ItemsManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -52,7 +54,8 @@ public final class DestinyTools extends JavaPlugin {
     // Register Commands
     this.paperCommandManager.registerCommand(new ItemsCMD());
 
-    this.logger.info("DestinyTools is on fire!");
+
+    this.logger.info( "§b DestinyTools is on fire!");
 
 
   }
@@ -95,5 +98,6 @@ public final class DestinyTools extends JavaPlugin {
     }
     return participants;
   }
+
 
 }
